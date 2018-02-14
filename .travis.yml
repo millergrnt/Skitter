@@ -5,4 +5,4 @@ python:
 install:
  - pip install -r Testing/requirements.txt
 script:
- - "python Testing/test.py"
+ - "python ./Testing/test.py"
