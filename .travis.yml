@@ -8,6 +8,6 @@ python:
  - "3.6"
  - "nightly"
 install:
- - pip install -r Testing/requirements.txt
+ - pip install -r ./Testing/requirements.txt
 script:
- - "python ./Testing/test.py"
+ - python test.py
