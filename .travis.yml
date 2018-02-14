@@ -5,4 +5,4 @@ python:
 install:
  - pip install -r Testing/requirements.txt
 script:
- - Testing/pytest.py
+ - python3 Testing/test.py

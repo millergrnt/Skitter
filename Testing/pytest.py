@@ -4,11 +4,11 @@
 #   Authors: Grant Miller <gem1086@g.rit.edu>
 #	     Nick Querci <ncq7286@g.rit.edu>
 #
-import os
-
+def func(x):
+	return x + 1;
 
 def main():
-	sys.exit(0);
+	assert func(3) == 4;
 
 if __name__ == '__main__':
 	main();
