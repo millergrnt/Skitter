@@ -4,11 +4,19 @@
 #   Authors: Grant Miller <gem1086@g.rit.edu>
 #	     Nick Querci <ncq7286@g.rit.edu>
 #
+import os
+
 def func(x):
 	return x + 1;
 
 def main():
-	assert func(3) == 4;
+	print("Beginning Tests:\n\tTesting func(3) == 4:"):
+	if(func(3) == 4):
+		print("\t\t[+]Testing Successful");
+		sys.exit(0);
+	else:
+		print("\t\t[-]Testing Failed");
+		sys.exit(1);
 
 if __name__ == '__main__':
 	main();
