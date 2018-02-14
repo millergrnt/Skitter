@@ -4,7 +4,7 @@
 #   Authors: Grant Miller <gem1086@g.rit.edu>
 #	     Nick Querci <ncq7286@g.rit.edu>
 #
-import os
+import sys
 
 def func(x):
 	return x + 1;
