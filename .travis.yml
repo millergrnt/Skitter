@@ -5,4 +5,4 @@ python:
 install:
  - pip install -r Testing/requirements.txt
 script:
- - python3 Testing/test.py
+ - coverage run Testing/test.py
