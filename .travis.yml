@@ -5,3 +5,4 @@ install:
  - pip install -r requirements.txt
 script:
  - python pytest.py
+ - locust --host=http://grantxps.student.rit.edu:80

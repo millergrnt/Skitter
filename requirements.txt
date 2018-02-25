@@ -1,2 +1,3 @@
 #Install python testing tool
 pytest
+locustio

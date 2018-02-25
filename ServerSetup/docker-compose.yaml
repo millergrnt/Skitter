@@ -1,0 +1,30 @@
+version: '3'
+services:
+  apache1:
+    build: ./apache1/
+    image: apache1
+    depends_on:
+      - cache1
+      - cache2
+  cache1:
+    build: ./varnish1/
+    image: varnish1
+  web2:
+    build: ./apach2/
+    image: apache2
+    depends_on:
+      - cache1
+      - cache2
+  cache2:
+    build: ./varnish2/
+    image: varnish2
+  load:
+    build: ./haproxy/
+    ports:
+      - "80:80"
+    image: load_balancer
+    depends_on:
+      - cache1
+      - cache2
+      - web1
+      - web2

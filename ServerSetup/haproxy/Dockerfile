@@ -1,0 +1,3 @@
+FROM haproxy
+
+ADD . .
