@@ -1,23 +1,31 @@
 version: '3'
 services:
+  db:
+    build: ./mysql/
+    image: mysql
   apache1:
     build: ./apache1/
     image: apache1
     depends_on:
       - cache1
       - cache2
+      - mysql
   cache1:
     build: ./varnish1/
     image: varnish1
+      - mysql
   web2:
     build: ./apach2/
     image: apache2
     depends_on:
       - cache1
       - cache2
+      - mysql
   cache2:
     build: ./varnish2/
     image: varnish2
+    depends_on:
+      - mysql
   load:
     build: ./haproxy/
     ports:
@@ -28,3 +36,4 @@ services:
       - cache2
       - web1
       - web2
+      - mysql
