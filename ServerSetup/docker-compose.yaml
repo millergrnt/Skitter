@@ -1,39 +1,33 @@
 version: '3'
 services:
-  db:
+  mysql:
     build: ./mysql/
-    image: mysql
   apache1:
     build: ./apache1/
-    image: apache1
     depends_on:
-      - cache1
-      - cache2
+      - varnish1
+      - varnish2
       - mysql
-  cache1:
+  varnish1:
     build: ./varnish1/
-    image: varnish1
-      - mysql
-  web2:
-    build: ./apach2/
-    image: apache2
     depends_on:
-      - cache1
-      - cache2
       - mysql
-  cache2:
+  apache2:
+    build: ./apache2/
+    depends_on:
+      - varnish1
+      - varnish2
+      - mysql
+  varnish2:
     build: ./varnish2/
-    image: varnish2
     depends_on:
       - mysql
-  load:
+  haproxy:
     build: ./haproxy/
     ports:
       - "80:80"
-    image: load_balancer
     depends_on:
-      - cache1
-      - cache2
-      - web1
-      - web2
-      - mysql
+      - varnish1
+      - varnish2
+      - apache1
+      - apache2

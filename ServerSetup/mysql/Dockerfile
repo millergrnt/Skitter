@@ -1,4 +1,4 @@
-FROM mysql-server
+FROM mysql
 
 ADD . .
 
