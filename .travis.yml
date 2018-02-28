@@ -2,7 +2,7 @@ language: python
 python:
  - "3.6"
 install:
- - pip install -r requirements.txt
+ - pip install -r testing/requirements.txt
 script:
- - python pytest.py
- - locust --host=http://grantxps.student.rit.edu:80
+ - python testing/initial_test.py
+ - locust -f testing/locustfile.py --host=http://grantxps.student.rit.edu:80
