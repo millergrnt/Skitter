@@ -123,11 +123,12 @@ h5{
 #banner{
 	padding-bottom: 3px;
 	padding-top: 2px;
+	width: 100%;
 	border-bottom: solid 1px grey;
 }
 
 #post{
-	height: 400px;
+	height: 300px;
 	width: 75%;
 	border: solid 1px grey;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -171,4 +172,44 @@ h5{
 #friendPost button{
 	background-color: white;
 	border: none;
+	outline: none;
+}
+
+#postPic{
+	display: inline;
+	height: 100px;
+	width: 100px;
+	border-radius: 50%;
+}
+
+#banner p{
+	display: inline;
+}
+
+#postContent{
+	width: 75%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#personalBanner{
+	padding-bottom: 10px;
+	padding-top: 5px;
+	width: 80%;
+	border-bottom: solid 1px grey;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#personalBanner p{
+	display: inline;
+	float: right;
+	font-size: 1.2em;
+	transform: translateY(100%);
+}
+
+#bannerData{
+	width: 70%;
+	margin-left: auto;
+	margin-right: auto;
 }
