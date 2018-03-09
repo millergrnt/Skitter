@@ -8,15 +8,43 @@
 	</head>
 	<body>
 		<div class="container-fluid" id="mainContainer">
+			<div class="container-fluid">
+				<div id="blur">
+					<div class="container-fluid" id="inputArea">
+						<h2 id="settingsHeader">Settings</h2>
+						<div id="field">
+							<form>
+								<div id="displayName">
+									<p>Display Name:</p>
+									<input class="textInput" type="text" id="displayName" placeholder="Enter Display Name"></textarea>
+								</div>
+								<div id="emailInput">
+									<p>Email:</p>
+								<input class="textInput" type="text" id="email" placeholder="Enter Email Address"></textarea>
+								</div>
+								<div id="fileInput">
+									<p>Profile Pic:</p>
+									<input class="textInput" type="text" id="img" placeholder="Enter Image Path"></textarea>
+								</div>
+							</form>
+						<div id="submitButtonDiv">
+							<button type="button" id="submitButton"><span>Submit</span></button>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="container-fluid" id="userBanner">
 				<div id="skitterData">
-
 				</div>
 				<div id="userData">
-					<h2 id="username">
-						Grant Miller
-					</h2>
-					<img id="userProfilePic" src="img/youre-going-to-have-a-bad-time.png" />
+					<div id="usernamediv">
+						<h2 id="username">
+							Grant Miller
+						</h2>
+					</div>
+					<div id="bannerProfPic">
+						<img id="userProfilePic" src="img/youre-going-to-have-a-bad-time.png" />
+					</div>
 				</div>
 			</div>
 
@@ -126,6 +154,16 @@
 						<p id="postContent">
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat malesuada massa, in mattis mauris viverra a. Vestibulum vel nullam.
 						</p>
+						<div id="personalPostData">
+							<div id="personalPostlikes">
+								<p id="likeCount">5</p>
+								<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg" /></button>
+							</div>
+							<div id="personalPostComment">
+								<p id="commentCount">1</p>
+								<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg" /></button>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -140,6 +178,16 @@
 						<p id="postContent">
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat malesuada massa, in mattis mauris viverra a. Vestibulum vel nullam.
 						</p>
+						<div id="personalPostData">
+							<div id="personalPostlikes">
+								<p id="likeCount">5</p>
+								<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg" /></button>
+							</div>
+							<div id="personalPostComment">
+								<p id="commentCount">1</p>
+								<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg" /></button>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -154,6 +202,16 @@
 						<p id="postContent">
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat malesuada massa, in mattis mauris viverra a. Vestibulum vel nullam.
 						</p>
+						<div id="personalPostData">
+							<div id="personalPostlikes">
+								<p id="likeCount">5</p>
+								<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg" /></button>
+							</div>
+							<div id="personalPostComment">
+								<p id="commentCount">1</p>
+								<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg" /></button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="credits">

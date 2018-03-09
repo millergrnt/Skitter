@@ -39,10 +39,22 @@ html,body, .container-fluid{
 	transform: translateY(20%);
 }
 
+#usernamediv{
+	display: inline;
+	padding-right: 15px;
+	height: 50%;
+	width: 50%;
+}
+
 #username{
 	display: inline;
-	transform: translateY(70%);
-	padding-right: 5px;
+	transform: translateY(50%);
+}
+
+#bannerProfPic{
+	display: inline;
+	height: 100px;
+	width: 100px;
 }
 
 #friendsPosts{
@@ -212,4 +224,83 @@ h5{
 	width: 70%;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+#personalPostlikes{
+	display: inline;
+}
+
+#personalPostComment{
+	display: inline;
+}
+
+#personalPostData{
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+#personalPostData p{
+	display: inline;
+}
+
+#personalPostData img{
+	width: 30px;
+	height: 30px;
+}
+
+#personalPostData button{
+	background-color: white;
+	outline: none;
+	border: none;
+	width: 20%;
+}
+
+#blur{
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+#inputArea{
+	height: 50%;
+	width: 55%;
+	margin-left: 30%;
+	transform: translateY(15%);
+	background-color: rgba(0,0,0,0.5);
+	border-radius: 3px;
+	border: 3px solid #ff4757;
+	background: rgba(0,0,0,0.3);
+	z-index: 2;
+	color: white;
+	text-align: center;
+}
+
+#inputArea input{
+	display: block;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+form p{
+	display: inline;
+}
+
+#inputArea button{
+	margin-top: 20px;
+	background-color: #ff4757;
+	border: 1px solid white;
+	color:white;
+	transition: 0.5s;
+}
+
+#inputArea button:hover{
+	background-color: white;
+	border: 1px solid #ff4757;
+	color: black;
+	transition: 0.5s;
 }
