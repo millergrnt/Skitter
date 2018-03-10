@@ -40,10 +40,12 @@ html,body, .container-fluid{
 }
 
 #usernamediv{
+	margin-right: 30px;
 	display: inline;
-	padding-right: 15px;
 	height: 50%;
 	width: 50%;
+	float: left;
+	transform: translateY(50%);
 }
 
 #username{
@@ -53,8 +55,8 @@ html,body, .container-fluid{
 
 #bannerProfPic{
 	display: inline;
-	height: 100px;
-	width: 100px;
+	width: 50%;
+	height: 100%;
 }
 
 #friendsPosts{
@@ -215,9 +217,8 @@ h5{
 
 #personalBanner p{
 	display: inline;
-	float: right;
-	font-size: 1.2em;
-	transform: translateY(100%);
+	font-size: 1.4em;
+	margin-left: 11vw;
 }
 
 #bannerData{
@@ -267,12 +268,11 @@ h5{
 	height: 50%;
 	width: 55%;
 	margin-left: 30%;
-	transform: translateY(15%);
-	background-color: rgba(0,0,0,0.5);
+	transform: translateY(50%);
+	background-color: rgba(50, 51, 49, 0.95);
 	border-radius: 3px;
 	border: 3px solid #ff4757;
-	background: rgba(0,0,0,0.3);
-	z-index: 2;
+	z-index: 5;
 	color: white;
 	text-align: center;
 }
@@ -296,9 +296,36 @@ form p{
 	border: 1px solid white;
 	color:white;
 	transition: 0.5s;
+	outline: none;
+	margin: 5px;
 }
 
 #inputArea button:hover{
+	background-color: white;
+	border: 1px solid #ff4757;
+	color: black;
+	transition: 0.5s;
+}
+
+#inputArea h2{
+	padding-top: 10px;
+}
+
+#skitterData{
+	display: inline;
+}
+
+#skitterData button{
+	margin-top: 55px;
+	margin-left: 25px;
+	display: inline;
+	background-color: #ff4757;
+	color: white;
+	border: 1px solid white;
+	transition: 0.5s;
+}
+
+#skitterData button:hover{
 	background-color: white;
 	border: 1px solid #ff4757;
 	color: black;

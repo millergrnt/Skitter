@@ -7,3 +7,19 @@ $('[id=likeButton]').on({
 		}
 	}
 });
+
+$("#exitButton").on({
+	'click' : function(){
+		$("#blur").hide();
+	}
+});
+
+$("#getSettings").on({
+	'click' : function(){
+		$("#blur").show();
+	}
+});
+
+$(window).on( "load", function(){
+	$("#blur").hide();
+});
