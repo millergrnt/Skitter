@@ -19,24 +19,16 @@
 					<div class="container-fluid" id="inputArea">
 						<h2 id="settingsHeader">Settings</h2>
 						<div id="field">
-							<form action="settings.php" method="post">
-								<div id="displayName">
-									<p>Display Name:</p>
-									<input class="textInput" type="text" id="displayName" placeholder="Enter Display Name"></textarea>
-								</div>
-								<div id="emailInput">
-									<p>Email:</p>
-								<input class="textInput" type="text" id="email" placeholder="Enter Email Address"></textarea>
-								</div>
-								<div id="fileInput">
-									<p>Profile Pic:</p>
-									<input type="file" name="fileToUpload" id="fileToUpload">
-								</div>
+							<form action="php/settings.php" method="post">
+								<p>Display Name:</p>
+								<input type="text" id="displayName" placeholder="Enter Display Name" name="displayName">
+								<p>Email:</p>
+								<input type="text" id="email" placeholder="Enter Email Address" name="email">
+								<p>Profile Pic:</p>
+								<input type="file" name="fileToUpload" id="fileToUpload">
+								<button type="submit" id="submitButton"><span>Submit</span></button>
+								<button type="button" id="exitButton"><span>Close</span></button>
 							</form>
-						<div id="submitButtonDiv">
-							<button type="submit" id="submitButton"><span>Submit</span></button>
-							<button type="button" id="exitButton"><span>Close</span></button>
-						</div>
 					</div>
 				</div>
 			</div>
