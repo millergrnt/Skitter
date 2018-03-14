@@ -59,14 +59,30 @@
 	}
 
 	if(isset($file)){
-		$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
+		$target_dir = "uploads/";
+		$target_file = $target_dir . basename($_POST["fileToUpload"]);
+
+		//Guilty until innocent
+		$uploadOkay = 0;
+		$imgFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+		$check = getimagesize($_POST["fileToUpload"]);
+
+		if($check !== false) {
+			echo "File is an image - " . $check["mime"] . ".";
+			$uploadOk = 1;
+		} else {
+			echo "File is not an image.";
+			$uploadOk = 0;
+		}
+
+		/*$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
 		$stmt->bind_param("si", $file, $_SESSION['user_ID']);
 
 		if(!$stmt->execute()){
 			print "Error in executing command";
 		}
 
-		$stmt->close();
+		$stmt->close();*/
 	}
 
 	function validateUsername($unameUnsanitized){
@@ -95,13 +111,7 @@
 	function validateFile($fileUnsanitized){
 		$fileSanitized = strip_tags($fileUnsanitized);
 		if(strlen($fileSanitized) >= 1){
-			$image = getimagesize($fileSanitized) ? true : false;
-
-			if($image == true){
-				return $fileSanitized;
-			} else {
-				die("File uploaded was not an image<br>");
-			}
+			return $fileSanitized;
 		}
 
 		$fileSanitized = NULL;

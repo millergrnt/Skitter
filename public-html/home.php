@@ -24,7 +24,7 @@
 					<div class="container-fluid" id="inputArea">
 						<h2 id="settingsHeader">Settings</h2>
 						<div id="field">
-							<form action="php/settings.php" method="post">
+							<form action="php/settings.php" method="post" enctype="multipart/form-data">
 								<p>Display Name:</p>
 								<input type="text" id="displayName" placeholder="Enter Display Name" name="displayName">
 								<p>Email:</p>
