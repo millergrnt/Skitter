@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	$servername = 'localhost';
 	$dbuname = 'root';
 	$dbpass = 'root';
@@ -14,12 +15,12 @@
 	$email = $_POST['email'];
 	$file = $_POST['fileToUpload'];
 
-	//Let's validate the post parameters, they will be NULL if they were not entered.
+	//Validate the post parameters, they will be NULL if they were not entered.
 	$username = validateUsername($username);
 	$email = validateEmail($email);
 	$file = validateFile($file);
 
-	//Let's check if the username is already taken
+	//Cookie has passed inspection, time to actually execute updates
 	if(isset($username)){
 		$stmt = $conn->prepare("SELECT userid FROM Users WHERE username = ?;");
 		$stmt->bind_param("s", $username);
@@ -29,32 +30,43 @@
 		}
 
 		$stmt->bind_result($userid);
-
-		if(!isset($userid)){
-			die "Error settings username: username already being used<br>";
+		$stmt->fetch();
+		if(isset($userid)){
+			die("Error setting username: username already being used<br>");
 		}
+
+		$stmt->close();
+
+		$stmt = $conn->prepare("UPDATE Users SET username = ? WHERE userid = ?;");
+		$stmt->bind_param("si", $username, $_SESSION['user_ID']);
+
+		if(!$stmt->execute()){
+			print "Error in executing command";
+		}
+
+		$stmt->close();
 	}
 
-	//Get the user's userid based on their id cookie
-	$stmt->prepare("SELECT userid FROM Users WHERE idcookie = ?;");
-	$stmt->bind_param("s", $_COOKIE["id"]);
+	if(isset($email)){
+		$stmt = $conn->prepare("UPDATE Users SET email = ? WHERE userid = ?;");
+		$stmt->bind_param("si", $email, $_SESSION['user_ID']);
 
-	if(!$stmt->execute()){
-		print "Error in executing command";
+		if(!$stmt->execute()){
+			print "Error in executing command";
+		}
+
+		$stmt->close();
 	}
 
-	$stmt->bind_result($userid);
+	if(isset($file)){
+		$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
+		$stmt->bind_param("si", $file, $_SESSION['user_ID']);
 
-	if(isset($userid)){
-		print "Fatal Cookie Error<br>";
-	}
+		if(!$stmt->execute()){
+			print "Error in executing command";
+		}
 
-	$id = $_COOKIE["id"];
-	$stmt = $conn->prepare("UPDATE Users SET username = ? WHERE idcookie = ?;");
-	$stmt->bind_param("ss", $username, $id);
-
-	if(!$stmt->execute()){
-		print "Error in executing command";
+		$stmt->close();
 	}
 
 	function validateUsername($unameUnsanitized){
@@ -72,7 +84,7 @@
 			if(filter_var($emailSanitized, FILTER_VALIDATE_EMAIL)){
 				return $emailSanitized;
 			} else {
-				die("<br>Email is invalid<br>");
+				die("Email is invalid<br>");
 			}
 		}
 
@@ -88,7 +100,7 @@
 			if($image == true){
 				return $fileSanitized;
 			} else {
-				die("<br>File uploaded was not an image<br>");
+				die("File uploaded was not an image<br>");
 			}
 		}
 

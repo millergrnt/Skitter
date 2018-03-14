@@ -1,30 +1,6 @@
 <?php
-	$email = "millergrnt@gmail.com";
-	$password = "password";
-	$servername = 'localhost';
-	$dbuname = 'root';
-	$dbpass = 'root';
-	$dbname = 'Skitter';
-	$id = NULL;
-	$conn = new mysqli($servername, $dbuname, $dbpass, $dbname);
-
-	if($conn->connect_error){
-		die("Connection failed sorry");
-	}
-
-	$stmt = $conn->prepare("SELECT idcookie FROM Users WHERE email = ? AND password = ?;");
-	$stmt->bind_param("ss", $email, $password);
-
-	if(!$stmt->execute()){
-		print "Error in executing command";
-	}
-
-	$stmt->bind_result($id);
-
-	if(!isset($id)){
-		die "Error logging in<br>";
-	}
-	setcookie("id", $id, time() + (86400 * 30), "/");
+	session_start();
+	$_SESSION['user_ID'] = 1;
 ?>
 
 <!DOCTYPE html>
