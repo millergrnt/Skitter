@@ -67,14 +67,6 @@
 		$imgFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 		$check = getimagesize($_POST["fileToUpload"]);
 
-		if($check !== false) {
-			echo "File is an image - " . $check["mime"] . ".";
-			$uploadOk = 1;
-		} else {
-			echo "File is not an image.";
-			$uploadOk = 0;
-		}
-
 		/*$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
 		$stmt->bind_param("si", $file, $_SESSION['user_ID']);
 
@@ -84,6 +76,8 @@
 
 		$stmt->close();*/
 	}
+
+	header("Location: http://grantimac.student.rit.edu/");
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);
