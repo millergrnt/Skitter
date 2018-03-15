@@ -1,6 +1,8 @@
 <?php
 	session_start();
 	$_SESSION['user_ID'] = 1;
+	$_SESSION['username'] = "millergrnt";
+	$_SESSION['email'] = "millergrnt@gmail.com";
 ?>
 
 <!DOCTYPE html>
@@ -44,11 +46,15 @@
 				<div id="userData">
 					<div id="usernamediv">
 						<h2 id="username">
-							Grant Miller
+							<?php
+								print $_SESSION['username'];
+							?>
 						</h2>
 						<br/>
 						<h5 id="email">
-							gem1086@g.rit.edu
+							<?php
+								print $_SESSION['email'];
+							?>
 						</h5>
 					</div>
 					<div id="bannerProfPic">

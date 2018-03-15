@@ -13,7 +13,7 @@
 
 	$username = $_POST['displayName'];
 	$email = $_POST['email'];
-	$file = $_POST['fileToUpload'];
+	$file = $_FILES['fileToUpload']['name'];
 
 	//Validate the post parameters, they will be NULL if they were not entered.
 	$username = validateUsername($username);
@@ -60,24 +60,30 @@
 
 	if(isset($file)){
 		$target_dir = "uploads/";
-		$target_file = $target_dir . basename($_POST["fileToUpload"]);
+		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 
 		//Guilty until innocent
 		$uploadOkay = 0;
 		$imgFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-		$check = getimagesize($_POST["fileToUpload"]);
+		$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+		if ($check !== false) {
+			move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file);
+		} else {
+			die("File is not an image.");
+		}
 
-		/*$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
-		$stmt->bind_param("si", $file, $_SESSION['user_ID']);
+		//Store the file's location in the db
+		$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
+		$stmt->bind_param("si", $target_file, $_SESSION['user_ID']);
 
 		if(!$stmt->execute()){
 			print "Error in executing command";
 		}
 
-		$stmt->close();*/
+		$stmt->close();
 	}
 
-	header("Location: http://grantimac.student.rit.edu/");
+	//header("Location: http://grantimac.student.rit.edu/");
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);
