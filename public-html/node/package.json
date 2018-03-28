@@ -1,0 +1,24 @@
+{
+  "name": "Skitter",
+  "version": "1.0.0",
+  "description": "Skitter",
+  "main": "getStarted.js",
+  "scripts": {
+    "dev": "nodemon getStarted.js",
+    "start": "node getStarted.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/millergrnt/Skitter.git"
+  },
+  "author": "Grant Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/millergrnt/Skitter"
+  },
+  "homepage": "https://github.com/millergrnt/Skitter",
+  "dependencies": {
+    "elasticsearch": "^14.2.1",
+    "nodemon": "^1.14.11"
+  }
+}
