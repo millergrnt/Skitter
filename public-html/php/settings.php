@@ -1,16 +1,8 @@
 <?php
+	//Connect to database and get some basic information from the uploaded details
 	session_start();
-	$servername = 'localhost';
-	$dbuname = 'root';
-	$dbpass = 'root';
-	$dbname = 'Skitter';
-	$conn = new mysqli($servername, $dbuname, $dbpass, $dbname);
+	include_once("sqlConnect.php");
 	$userid = NULL;
-
-	if($conn->connect_error){
-		die("Connection failed sorry");
-	}
-
 	$username = $_POST['displayName'];
 	$email = $_POST['email'];
 	$file = $_FILES['fileToUpload']['name'];
@@ -22,6 +14,8 @@
 
 	//Cookie has passed inspection, time to actually execute updates
 	if(isset($username)){
+
+		//Check if this is already someone else's username
 		$stmt = $conn->prepare("SELECT userid FROM Users WHERE username = ?;");
 		$stmt->bind_param("s", $username);
 
@@ -37,6 +31,7 @@
 
 		$stmt->close();
 
+		//It is not so we can set this user's username
 		$stmt = $conn->prepare("UPDATE Users SET username = ? WHERE userid = ?;");
 		$stmt->bind_param("si", $username, $_SESSION['user_ID']);
 
@@ -47,6 +42,7 @@
 		$stmt->close();
 	}
 
+	//Store the email, it has already passed inspection
 	if(isset($email)){
 		$stmt = $conn->prepare("UPDATE Users SET email = ? WHERE userid = ?;");
 		$stmt->bind_param("si", $email, $_SESSION['user_ID']);
@@ -58,32 +54,49 @@
 		$stmt->close();
 	}
 
+	//File has passed initial inspection and is ready to be uploaded
 	if(isset($file)){
-		$target_dir = "uploads/";
-		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 
-		//Guilty until innocent
-		$uploadOkay = 0;
-		$imgFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+		//Get the type of file and set up the directory in which we want to store it
+		$target_dir = "../uploads/";
+		$imgFileType = strtolower(pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION));
+		$imgFileType = strip_tags($imgFileType);
+
+		//Generate a random name for the file so that any malicious names are disregarded
+		$randomName = base64_encode(uniqid('', true));
+		$randomName = str_replace("=", '', $randomName);
+		$randomName = $randomName . "." . $imgFileType;
+
+		//Prevent any collisions (not likely but needs to be done)
+		while(file_exists($randomName)){
+			$randomName = base64_encode(uniqid('', true));
+			$randomName = str_replace("=", '', $randomName);
+			$randomName = $randomName . "." . $imgFileType;
+		}
+
+		$target_file = $target_dir . $randomName;
+		$imgFileType = strtolower(pathinfo($randomName, PATHINFO_EXTENSION));
 		$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+
+		//Make sure the file has some size and then upload it
 		if ($check !== false) {
 			move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file);
+
+			//Store the file's location in the db
+			$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
+			$stmt->bind_param("si", $target_file, $_SESSION['user_ID']);
+
+			if(!$stmt->execute()){
+				print "Error in executing command";
+			}
+
+			$stmt->close();
 		} else {
 			die("File is not an image.");
 		}
-
-		//Store the file's location in the db
-		$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
-		$stmt->bind_param("si", $target_file, $_SESSION['user_ID']);
-
-		if(!$stmt->execute()){
-			print "Error in executing command";
-		}
-
-		$stmt->close();
 	}
 
-	//header("Location: http://grantimac.student.rit.edu/");
+	header("Location: http://localhost/?id=" . $_SESSION['user_ID']);
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);
@@ -105,7 +118,7 @@
 		}
 
 		$emailSanitized = NULL;
-		return $fileSanitized;
+		return $emailSanitized;
 	}
 
 	function validateFile($fileUnsanitized){
