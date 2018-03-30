@@ -1,9 +1,10 @@
 <?php
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
 	session_start();
 	$user_id = strip_tags($_SESSION['user_ID']);
 	$content = strip_tags($_POST['skitContent'], "a");
+	if(strlen($content) > 140){
+		die("Skit is too long sorry.");
+	}
 	$data = array('user_id' => $user_id, 'content' => $content);
 	$options = array(
 		'http' => array(

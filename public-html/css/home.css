@@ -297,6 +297,8 @@ form p{
 
 #skitContent{
 	text: grey;
+	height: 25px;
+	width
 }
 
 #addPost{
@@ -343,6 +345,23 @@ form p{
 #skitterData button:hover{
 	background-color: white;
 	border: 1px solid #ff4757;
+	color: black;
+	transition: 0.5s;
+}
+
+#deleteButton{
+	margin-top: 20px;
+	margin-left: 25px;
+	display: inline;
+	background-color: #ff4757 !important;
+	color: white;
+	border: 1px solid white !important;
+	transition: 0.5s;
+}
+
+#deleteButton:hover{
+	background-color: white;
+	border: 1px solid #ff4757 !important;
 	color: black;
 	transition: 0.5s;
 }

@@ -27,11 +27,13 @@ $stmt->close();
 
 $_SESSION['token'] = bin2hex(random_bytes(32));
 $_SESSION['randomString'] = bin2hex(random_bytes(32));
+$_SESSION['deleteToken'] = bin2hex(random_bytes(32));
 $_SESSION['user_ID'] = $id_to_get;
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
 $token = $_SESSION['token'];
 $randomString = $_SESSION['randomString'];
+$deleteToken = $_SESSION['deleteToken'];
 ?>
 
 <!DOCTYPE html>
@@ -187,7 +189,7 @@ $randomString = $_SESSION['randomString'];
 				<div class="container-fluid" id="addPost">
 					<form action="php/addSkit.php" method="post">
 						<p>What are you thinking?</p>
-						<input type="text" id="skitContent" placeholder="It's a nice day" name="skitContent">
+						<input type="text" id="skitContent" placeholder="It's a nice day" name="skitContent" maxlength="140">
 						<button type="submit" id="submitButton"><span>Submit</span></button>
 					</form>
 				</div>
@@ -217,6 +219,13 @@ $randomString = $_SESSION['randomString'];
 								<div id="personalPostComment">
 									<p id="commentCount">1</p>
 									<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg"></button>
+								</div>
+								<div id="deleteButtonDiv">
+									<form action="php/deleteSkit.php" method="post">
+										<input type="hidden" name="token" value="<?= hash_hmac('sha256', $randomString, $token)?>">
+										<input type="hidden" name="skitID" value="<?= $line_arr[3]?>">
+										<button type="submit" id="deleteButton">Delete</button>
+									</form>
 								</div>
 							</div>
 						</div>
