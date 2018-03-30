@@ -25,9 +25,13 @@ if(isset($userid)){
 
 $stmt->close();
 
+$_SESSION['token'] = bin2hex(random_bytes(32));
+$_SESSION['randomString'] = bin2hex(random_bytes(32));
 $_SESSION['user_ID'] = $id_to_get;
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
+$token = $_SESSION['token'];
+$randomString = $_SESSION['randomString'];
 ?>
 
 <!DOCTYPE html>
@@ -58,6 +62,7 @@ $_SESSION['email'] = $email;
 							<input type="text" id="email" placeholder="Enter Email Address" name="email">
 							<p>Profile Pic:</p>
 							<input type="file" name="fileToUpload" id="fileToUpload">
+							<input type="hidden" name="token" value="<?= hash_hmac('sha256', $randomString, $token)?>">
 							<button type="submit" id="submitButton"><span>Submit</span></button>
 							<button type="button" id="exitButton"><span>Close</span></button>
 						</form>
