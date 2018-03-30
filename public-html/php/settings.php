@@ -6,6 +6,11 @@
 	$username = $_POST['displayName'];
 	$email = $_POST['email'];
 	$file = $_FILES['fileToUpload']['name'];
+	
+	$calc = hash_hmac('sha256', $_SESSION['randomString'], $_SESSION['token']);
+	if(!hash_equals($calc, $_POST['token'])){
+		die("ERROR IN TOKEN");
+	}
 
 	//Validate the post parameters, they will be NULL if they were not entered.
 	$username = validateUsername($username);
