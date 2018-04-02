@@ -2,6 +2,7 @@
 session_start();
 include_once("php/sqlConnect.php");
 $id_to_get = 1;
+$_SESSION['user_ID'] = $id_to_get;
 if(isset($_GET['id'])){
 	$id_to_get = $_GET['id'];
 }
@@ -9,15 +10,16 @@ $id_to_get = strip_tags($id_to_get);
 $username = "";
 $email = "";
 $profile_pic = "";
+$friends = "";
 
-$stmt = $conn->prepare("SELECT username, email, profile_pic  FROM Users WHERE userid = ?;");
+$stmt = $conn->prepare("SELECT username, email, profile_pic, following  FROM Users WHERE userid = ?;");
 $stmt->bind_param("i", $id_to_get);
 
 if(!$stmt->execute()){
 	print "Error in executing command";
 }
 
-$stmt->bind_result($username, $email, $profile_pic);
+$stmt->bind_result($username, $email, $profile_pic, $friends);
 $stmt->fetch();
 if(isset($userid)){
 	die("Error setting username: username already being used<br>");
@@ -28,7 +30,6 @@ $stmt->close();
 $_SESSION['token'] = bin2hex(random_bytes(32));
 $_SESSION['randomString'] = bin2hex(random_bytes(32));
 $_SESSION['deleteToken'] = bin2hex(random_bytes(32));
-$_SESSION['user_ID'] = $id_to_get;
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
 $token = $_SESSION['token'];
@@ -74,6 +75,7 @@ $deleteToken = $_SESSION['deleteToken'];
 			<div class="container-fluid" id="userBanner">
 				<div id="skitterData">
 					<button id="getSettings" type="button">Settings</button>
+					<a href="/?id=1"><button id="goHome" type="button" >Home</button></a>
 				</div>
 				<div id="userData">
 					<div id="usernamediv">
@@ -96,92 +98,76 @@ $deleteToken = $_SESSION['deleteToken'];
 					<img id="skitterLogo" src="img/bird.svg" />
 					<h4 id="title">Friends' Posts</h4>
 				</div>
-				<div id="friendPost" class="container">
-					<div id="banner">
-						<img id="friendProfilePic" src="img/youre-going-to-have-a-bad-time.png" />
-						<h5>Steve Cook</h5>
-					</div>
-					<div id="content">
-						<p id="postContent">
-							I found this amazing chest routine. Seriously no pump ever like this before
-						</p>
-						<div id="postData">
-							<div id="likes">
-								<p id="count">5</p>
-								<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
-							</div>
-							<div id="comments">
-								<p id="count">1</p>
-								<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
+				<?php
+
+					//Lists the top 4 most recent friend skits on side bar
+					$stmt = $conn->prepare("SELECT following  FROM Users WHERE userid = ?;");
+					$stmt->bind_param("i", $_SESSION['user_ID']);
+
+					if(!$stmt->execute()){
+						print "Error in executing command";
+					}
+
+					$stmt->bind_result($friends);
+					$stmt->fetch();
+					$stmt->close();
+					$url = "http://localhost:61234/getSkits?ids=";
+					$url = $url . $friends;
+					$skitData = file_get_contents($url);
+					$i = 0;
+
+					//Split them by new line characters
+					$skits = preg_split("/((\r?\n)|(\r\n?))/", $skitData);
+					while($i < 4){
+						$line = $skits[$i];
+						if(strlen($line) == 0)
+							break;
+						//Split the lines by comma and then siphen the data we need from themn
+						$line_arr = explode(",", $line);
+						$skitOwner = $line_arr[0];
+
+						$skitUsername = "";
+						$skitProfilePic = "";
+
+						//Query the DB for the username and profile picture location from the users
+						$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+						$stmt->bind_param("i", $skitOwner);
+
+						if(!$stmt->execute()){
+							print "Error in executing command";
+						}
+
+						$stmt->bind_result($skitUsername, $skitProfilePic);
+						$stmt->fetch();
+						$stmt->close();
+				?>
+					<div id="friendPost" class="container">
+						<div id="banner">
+							<img id="friendProfilePic" src="<?=$skitProfilePic?>" />
+							<h5><?=$skitUsername?></h5>
+						</div>
+						<div id="content">
+							<p id="postContent">
+								<?=$line_arr[1]?>
+							</p>
+							<div id="postData">
+								<div id="likes">
+									<p id="count"><?=$line_arr[2]?></p>
+									<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
+								</div>
+								<div id="comments">
+									<p id="count">1</p>
+									<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div id="friendPost" class="container">
-					<div id="banner">
-						<img id="friendProfilePic" src="img/youre-going-to-have-a-bad-time.png" />
-						<h5>Katie Nolan</h5>
-					</div>
-					<div id="content">
-						<p id="postContent">
-							Just found out that someone at 115 chicken nuggets to out score the actual Nuggets, ouch...
-						</p>
-						<div id="postData">
-							<div id="likes">
-								<p id="count">5</p>
-								<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
-							</div>
-							<div id="comments">
-								<p id="count">1</p>
-								<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="friendPost" class="container">
-					<div id="banner">
-						<img id="friendProfilePic" src="img/youre-going-to-have-a-bad-time.png" />
-						<h5>Jeff Skinner</h5>
-					</div>
-					<div id="content">
-						<p id="postContent">
-							My man Eric had a nasty one tonight, bar down baby!!!
-						</p>
-						<div id="postData">
-							<div id="likes">
-								<p id="count">5</p>
-								<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
-							</div>
-							<div id="comments">
-								<p id="count">1</p>
-								<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="friendPost" class="container">
-					<div id="banner">
-						<img id="friendProfilePic" src="img/youre-going-to-have-a-bad-time.png" />
-						<h5>Lauren Hart</h5>
-					</div>
-					<div id="content">
-						<p id="postContent">
-							Rocking crowd tn at the WFC!! Let's go Flyers!
-						</p>
-						<div id="postData">
-							<div id="likes">
-								<p id="count">5</p>
-								<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
-							</div>
-							<div id="comments">
-								<p id="count">1</p>
-								<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<?php
+						$i = $i + 1;
+					}
+				?>
 				<div id="seeMoreButton">
-					<a href="friendPosts.html"><button type="button" id="viewMoreButton">View More</button></a>
+					<a href="listFriends.php?id=<?=$id_to_get?>"><button type="button" id="viewMoreButton">Friends</button></a>
 				</div>
 			</div>
 
@@ -194,43 +180,144 @@ $deleteToken = $_SESSION['deleteToken'];
 					</form>
 				</div>
 				<?php
-				$skitData = file_get_contents("http://localhost:61234/getSkits?id=1");
-				foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
-					if(strlen($line) == 0)
-						break;
-					$line_arr = explode(",", $line);
-					?>
-					<div id="post" class="container-fluid">
-						<div id="personalBanner">
-							<div id="bannerData">
-								<img id="postPic" src="<?=$profile_pic?>" />
-								<p id="postusername"><strong><?=$username?></strong></p>
+				/*
+					If the person's home we are trying to get is the Current User's page
+					Then and only then will we load in our Friend's skits as well as their own
+				*/
+				if($_SESSION['user_ID'] == $id_to_get){
+
+					//Add in some constants so we don't have to query the DB everytime we add in a skit
+					//only when it is a different person than ourself
+					$thisUsername = $username;
+					$thisProfilePic = $profile_pic;
+					$thisUserID = strval($_SESSION['user_ID']);
+
+					//Get the skit data
+					$url = "http://localhost:61234/getSkits?ids=";
+					$url = $url . $friends . ",1";
+					$skitData = file_get_contents($url);
+					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
+
+						//If the line of data is empty just leave the for loop because we have reached illegal data.
+						if(strlen($line) == 0)
+							break;
+						$line_arr = explode(",", $line);
+						$skitOwner = $line_arr[0];
+
+						//If the owner of this skit we are loading is not the current user
+						//We will need to query for some basic information about it
+						if($skitOwner != $thisUserID){
+							$skitUsername = "";
+							$skitProfilePic = "";
+							$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+							$stmt->bind_param("i", $skitOwner);
+
+							if(!$stmt->execute()){
+								print "Error in executing command";
+							}
+
+							$stmt->bind_result($username, $profile_pic);
+							$stmt->fetch();
+							if(isset($userid)){
+								die("Error setting username: username already being used<br>");
+							}
+
+							$stmt->close();
+						} else {
+
+							//Move our data back into the variables
+							$profile_pic = $thisProfilePic;
+							$username = $thisUsername;
+						}
+
+						?>
+						<div id="post" class="container-fluid">
+							<div id="personalBanner">
+								<div id="bannerData">
+									<img id="postPic" src="<?=$profile_pic?>" />
+									<p id="postusername"><strong><?=$username?></strong></p>
+								</div>
+							</div>
+							<div id="data">
+								<p id="postContent">
+									<?=$line_arr[1]?>
+								</p>
+								<div id="personalPostData">
+									<div id="personalPostlikes">
+										<p id="likeCount"><?=$line_arr[2]?></p>
+										<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg"></button>
+									</div>
+									<div id="personalPostComment">
+										<p id="commentCount">1</p>
+										<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg"></button>
+									</div>
+
+									<?php
+										if($_SESSION['user_ID'] == $skitOwner){
+											echo "
+											<div id=\"deleteButtonDiv\">
+												<form action=\"php/deleteSkit.php\" method=\"post\">
+													<input type=\"hidden\" name=\"token\" value=\"" . hash_hmac('sha256', $randomString, $token) . "\">
+													<input type=\"hidden\" name=\"skitID\" value=\"$line_arr[3]\">
+													<button type=\"submit\" id=\"deleteButton\">Delete</button>
+												</form>
+											</div>";
+										}
+									?>
+								</div>
 							</div>
 						</div>
-						<div id="data">
-							<p id="postContent">
-								<?=$line_arr[1]?>
-							</p>
-							<div id="personalPostData">
-								<div id="personalPostlikes">
-									<p id="likeCount"><?=$line_arr[2]?></p>
-									<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg"></button>
-								</div>
-								<div id="personalPostComment">
-									<p id="commentCount">1</p>
-									<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg"></button>
-								</div>
-								<div id="deleteButtonDiv">
-									<form action="php/deleteSkit.php" method="post">
-										<input type="hidden" name="token" value="<?= hash_hmac('sha256', $randomString, $token)?>">
-										<input type="hidden" name="skitID" value="<?= $line_arr[3]?>">
-										<button type="submit" id="deleteButton">Delete</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
 					<?php
+					}
+				} else {
+					//We are not on our own page so we only want to see that user's posts
+					//Not their friends or our friends or our posts
+					$url = "http://localhost:61234/getSkits?ids=";
+					$url = $url . $id_to_get;
+					$skitData = file_get_contents($url);
+					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
+						if(strlen($line) == 0)
+							break;
+						$line_arr = explode(",", $line);
+						?>
+						<div id="post" class="container-fluid">
+							<div id="personalBanner">
+								<div id="bannerData">
+									<img id="postPic" src="<?=$profile_pic?>" />
+									<p id="postusername"><strong><?=$username?></strong></p>
+								</div>
+							</div>
+							<div id="data">
+								<p id="postContent">
+									<?=$line_arr[1]?>
+								</p>
+								<div id="personalPostData">
+									<div id="personalPostlikes">
+										<p id="likeCount"><?=$line_arr[2]?></p>
+										<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg"></button>
+									</div>
+									<div id="personalPostComment">
+										<p id="commentCount">1</p>
+										<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg"></button>
+									</div>
+
+									<?php
+										if($_SESSION['user_ID'] == $id_to_get){
+											echo "
+											<div id=\"deleteButtonDiv\">
+												<form action=\"php/deleteSkit.php\" method=\"post\">
+													<input type=\"hidden\" name=\"token\" value=\"" . hash_hmac('sha256', $randomString, $token) . "\">
+													<input type=\"hidden\" name=\"skitID\" value=\"$line_arr[3]\">
+													<button type=\"submit\" id=\"deleteButton\">Delete</button>
+												</form>
+											</div>";
+										}
+									?>
+								</div>
+							</div>
+						</div>
+					<?php
+					}
 				}
 				?>
 				<div id="credits">
