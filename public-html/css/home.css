@@ -142,7 +142,8 @@ h5{
 }
 
 #post{
-	height: 300px;
+	min-height: 300px;
+	height: auto;
 	width: 75%;
 	border: solid 1px grey;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -344,9 +345,14 @@ form p{
 
 #skitterData button:hover{
 	background-color: white;
+	text-decoration: none;
 	border: 1px solid #ff4757;
 	color: black;
 	transition: 0.5s;
+}
+
+#skitterData a:hover{
+	text-decoration: none;
 }
 
 #deleteButton{
@@ -357,6 +363,7 @@ form p{
 	color: white;
 	border: 1px solid white !important;
 	transition: 0.5s;
+	margin-bottom: 35px;
 }
 
 #deleteButton:hover{
@@ -364,4 +371,31 @@ form p{
 	border: 1px solid #ff4757 !important;
 	color: black;
 	transition: 0.5s;
+}
+
+#addComment{
+	margin-top: 20px;
+	margin-left: 25px;
+	display: inline;
+	background-color: #ff4757 !important;
+	color: white;
+	border: 1px solid white !important;
+	transition: 0.5s;
+	margin-bottom: 35px;
+}
+
+#addComment:hover{
+	background-color: white;
+	border: 1px solid #ff4757 !important;
+	color: black;
+	transition: 0.5s;
+}
+
+.sideBarSkit{
+	color: black;
+}
+
+.sideBarSkit:hover{
+	color: black;
+	text-decoration: none;
 }

@@ -101,7 +101,7 @@
 		}
 	}
 
-	header("Location: http://localhost/?id=" . $_SESSION['user_ID']);
+	header("Location: http://grantimac.student.rit.edu/?id=" . $_SESSION['user_ID']);
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);

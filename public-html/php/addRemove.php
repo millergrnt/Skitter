@@ -41,5 +41,5 @@
 	}
 
 	$stmt->close();
-	header("Location: http://localhost/listFriends.php?id=" . $userid);
+	header("Location: http://grantimac.student.rit.edu/listFriends.php?id=" . $userid);
 ?>

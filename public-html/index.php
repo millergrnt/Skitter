@@ -88,7 +88,7 @@ $deleteToken = $_SESSION['deleteToken'];
 						</h5>
 					</div>
 					<div id="bannerProfPic">
-						<img id="userProfilePic" src="<?= $profile_pic?>" />
+						<img id="userProfilePic" src="<?=$profile_pic?>" />
 					</div>
 				</div>
 			</div>
@@ -118,7 +118,7 @@ $deleteToken = $_SESSION['deleteToken'];
 
 					//Split them by new line characters
 					$skits = preg_split("/((\r?\n)|(\r\n?))/", $skitData);
-					while($i < 4){
+					while($i < 6){
 						$line = $skits[$i];
 						if(strlen($line) == 0)
 							break;
@@ -141,6 +141,7 @@ $deleteToken = $_SESSION['deleteToken'];
 						$stmt->fetch();
 						$stmt->close();
 				?>
+					<a href="/?id=<?= $skitOwner?>" class="sideBarSkit">
 					<div id="friendPost" class="container">
 						<div id="banner">
 							<img id="friendProfilePic" src="<?=$skitProfilePic?>" />
@@ -150,18 +151,9 @@ $deleteToken = $_SESSION['deleteToken'];
 							<p id="postContent">
 								<?=$line_arr[1]?>
 							</p>
-							<div id="postData">
-								<div id="likes">
-									<p id="count"><?=$line_arr[2]?></p>
-									<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
-								</div>
-								<div id="comments">
-									<p id="count">1</p>
-									<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
-								</div>
-							</div>
 						</div>
 					</div>
+				</a>
 				<?php
 						$i = $i + 1;
 					}
@@ -201,7 +193,9 @@ $deleteToken = $_SESSION['deleteToken'];
 						//If the line of data is empty just leave the for loop because we have reached illegal data.
 						if(strlen($line) == 0)
 							break;
-						$line_arr = explode(",", $line);
+						$replyIDList = explode("|", $line);
+						$replyList = explode(",", $replyIDList[1]);
+						$line_arr = explode(",", $replyIDList[0]);
 						$skitOwner = $line_arr[0];
 
 						//If the owner of this skit we are loading is not the current user
@@ -243,25 +237,95 @@ $deleteToken = $_SESSION['deleteToken'];
 									<?=$line_arr[1]?>
 								</p>
 								<div id="personalPostData">
-									<div id="personalPostlikes">
-										<p id="likeCount"><?=$line_arr[2]?></p>
-										<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg"></button>
-									</div>
 									<div id="personalPostComment">
-										<p id="commentCount">1</p>
-										<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg"></button>
-									</div>
-
 									<?php
+										if($line_arr[3] != -1){
+											$url = "http://localhost:61234/getReply?id=";
+											$url = $url . $line_arr[3];
+											$originalData = file_get_contents($url);
+											$originalData = explode(",", $originalData);
+											$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+											$stmt->bind_param("i", $originalData[0]);
+
+											if(!$stmt->execute()){
+												print "Error in executing command";
+											}
+
+											$stmt->bind_result($username, $profile_pic);
+											$stmt->fetch();
+											if(strlen($originalData[0]) == 0){
+												$originalData[1] = "Original Skit not available, sorry.";
+												$profile_pic = "img/missingSkit.png";
+												$username = "";
+											}
+
+											$stmt->close();
+									?>
+										<div id="originalPost">
+											<p><strong>Original Skit:</strong></p>
+											<img id="replyPic" src="<?=$profile_pic?>" />
+											<p id="replyUsername"><strong><?=$username?></strong></p>
+											<p id="replyContent"><?=$originalData[1]?></p>
+										</div>
+									<?php
+										}
+										if($replyList[0] != -1){
+											foreach($replyList as $replyID){
+												$url = "http://localhost:61234/getReply?id=";
+												$url = $url . $replyID;
+												$replyData = file_get_contents($url);
+												$replyData = explode(",", $replyData);
+												$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+												$stmt->bind_param("i", $replyData[0]);
+
+												if(!$stmt->execute()){
+													print "Error in executing command";
+												}
+
+												$stmt->bind_result($username, $profile_pic);
+												$stmt->fetch();
+												if(isset($userid)){
+													die("Error setting username: username already being used<br>");
+												}
+
+												$stmt->close();
+									?>
+										<div class="comment">
+											<img id="replyPic" src="<?=$profile_pic?>" />
+											<p id="replyUsername"><strong><?=$username?></strong></p>
+											<p id="replyContent"><?=$replyData[1]?></p>
+										</div>
+									<?php
+											} 
+										}?>
+									</div>
+									<?php
+										/*
+											If this my skit, then I can delete it.
+										*/
 										if($_SESSION['user_ID'] == $skitOwner){
 											echo "
 											<div id=\"deleteButtonDiv\">
 												<form action=\"php/deleteSkit.php\" method=\"post\">
 													<input type=\"hidden\" name=\"token\" value=\"" . hash_hmac('sha256', $randomString, $token) . "\">
-													<input type=\"hidden\" name=\"skitID\" value=\"$line_arr[3]\">
+													<input type=\"hidden\" name=\"skitID\" value=\"$line_arr[2]\">
 													<button type=\"submit\" id=\"deleteButton\">Delete</button>
 												</form>
 											</div>";
+										} else {
+
+										/*
+											This is not my skit, so I can comment on it.
+										*/
+										?>
+											<div id="comment">
+												<form action="php/addComment.php" method="post">
+													<input type="text" name="commentContent">
+													<input type="hidden" name="originalSkitID" value="<?=$line_arr[2]?>">
+													<button type="submit" id="addComment">Add Comment</button>
+												</form>
+											</div>
+									<?php
 										}
 									?>
 								</div>
@@ -278,7 +342,11 @@ $deleteToken = $_SESSION['deleteToken'];
 					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
 						if(strlen($line) == 0)
 							break;
-						$line_arr = explode(",", $line);
+
+						$replyIDList = explode("|", $line);
+						$replyList = explode(",", $replyIDList[1]);
+						$line_arr = explode(",", $replyIDList[0]);
+						$skitOwner = $line_arr[0];
 						?>
 						<div id="post" class="container-fluid">
 							<div id="personalBanner">
@@ -292,27 +360,99 @@ $deleteToken = $_SESSION['deleteToken'];
 									<?=$line_arr[1]?>
 								</p>
 								<div id="personalPostData">
-									<div id="personalPostlikes">
-										<p id="likeCount"><?=$line_arr[2]?></p>
-										<button type="button" id="likeButton"><img id="personalDataImg" src="img/like.svg"></button>
-									</div>
 									<div id="personalPostComment">
-										<p id="commentCount">1</p>
-										<button type="button" id="commentButton"><img id="personalDataImg" src="img/chat.svg"></button>
+										<?php
+											if($line_arr[3] != -1){
+												$url = "http://localhost:61234/getReply?id=";
+												$url = $url . $line_arr[3];
+												$originalData = file_get_contents($url);
+												$originalData = explode(",", $originalData);
+												$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+												$stmt->bind_param("i", $originalData[0]);
+
+												if(!$stmt->execute()){
+													print "Error in executing command";
+												}
+
+												$stmt->bind_result($username, $profile_pic);
+												$stmt->fetch();
+												if(strlen($originalData[0]) == 0){
+													$originalData[1] = "Original Skit not available, sorry.";
+													$profile_pic = "img/missingSkit.png";
+													$username = "";
+												}
+												$stmt->close();
+										?>
+											<div id="originalPost">
+												<p><strong>Original Skit:</strong></p>
+												<img id="replyPic" src="<?=$profile_pic?>" />
+												<p id="replyUsername"><strong><?=$username?></strong></p>
+												<p id="replyContent"><?=$originalData[1]?></p>
+											</div>
+										<?php
+											}
+											if($replyList[0] != -1){
+												foreach($replyList as $replyID){
+													$url = "http://localhost:61234/getReply?id=";
+													$url = $url . $replyID;
+													$replyData = file_get_contents($url);
+													$replyData = explode(",", $replyData);
+													$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+													$stmt->bind_param("i", $replyData[0]);
+
+													if(!$stmt->execute()){
+														print "Error in executing command";
+													}
+
+													$stmt->bind_result($username, $profile_pic);
+													$stmt->fetch();
+													if(isset($userid)){
+														die("Error setting username: username already being used<br>");
+													}
+
+													$stmt->close();
+										?>
+											<div class="comment">
+												<img id="replyPic" src="<?=$profile_pic?>" />
+												<p id="replyUsername"><strong><?=$username?></strong></p>
+												<p id="replyContent"><?=$replyData[1]?></p>
+											</div>
+										<?php
+												} 
+											}?>
+										</div>
+										<?php
+											/*
+												If this my skit, then I can delete it.
+											*/
+											if($_SESSION['user_ID'] == $skitOwner){
+												echo "
+												<div id=\"deleteButtonDiv\">
+													<form action=\"php/deleteSkit.php\" method=\"post\">
+														<input type=\"hidden\" name=\"token\" value=\"" . hash_hmac('sha256', $randomString, $token) . "\">
+														<input type=\"hidden\" name=\"skitID\" value=\"$line_arr[2]\">
+														<button type=\"submit\" id=\"deleteButton\">Delete</button>
+													</form>
+												</div>";
+											} else {
+
+											/*
+												This is not my skit, so I can comment on it.
+											*/
+											?>
+												<div id="comment">
+													<form action="php/addComment.php" method="post">
+														<input type="text" name="commentContent">
+														<input type="hidden" name="originalSkitID" value="<?=$line_arr[2]?>">
+														<button type="submit" id="addComment">Add Comment</button>
+													</form>
+												</div>
+										<?php
+											}
+										?>
 									</div>
 
-									<?php
-										if($_SESSION['user_ID'] == $id_to_get){
-											echo "
-											<div id=\"deleteButtonDiv\">
-												<form action=\"php/deleteSkit.php\" method=\"post\">
-													<input type=\"hidden\" name=\"token\" value=\"" . hash_hmac('sha256', $randomString, $token) . "\">
-													<input type=\"hidden\" name=\"skitID\" value=\"$line_arr[3]\">
-													<button type=\"submit\" id=\"deleteButton\">Delete</button>
-												</form>
-											</div>";
-										}
-									?>
+									
 								</div>
 							</div>
 						</div>

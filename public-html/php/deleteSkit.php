@@ -23,5 +23,5 @@
 		die("Error removing skit.");
 	}
 	
-	header("Location: http://localhost/?id=" . $user_id);
+	header("Location: http://grantimac.student.rit.edu/?id=" . $user_id);
 ?>

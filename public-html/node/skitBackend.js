@@ -10,7 +10,7 @@ app.use( bodyParser.urlencoded({
 	extended: true
 }));
 
-var skitID = 6;
+var skitID = 7;
 
 /*
 	Create the elastic search object
@@ -43,13 +43,11 @@ client.search({
 	body: {
 		query: {
 			terms: {
-				ownerID: [1,2,3,4]
+				ownerID: [0,1,2,3,4]
 			}
 		}
 	}
 }).then(function(resp){
-	console.log(resp);
-	console.log(resp);
 	resp.hits.hits.forEach(function(hit){
 		client.delete({
 			index: 'skits',
@@ -73,9 +71,8 @@ client.index({
 		"skitID": 0,
 		"ownerID": 1,
 		"content": "Hello World",
-		"likes": 69,
-		"isReply": "N",
-		"replyTo": 0
+		"replyTo": [-1],
+		"replies": [1, 2]
 	}
 }, function(err, resp, status) {
 	if(err){
@@ -94,9 +91,8 @@ client.index({
 		"skitID": 1,
 		"ownerID": 1,
 		"content": "This is the second skit",
-		"likes": 420,
-		"isReply": "N",
-		"replyTo": 0
+		"replyTo": [0],
+		"replies": [-1]
 	}
 }, function(err, resp, status) {
 	if(err){
@@ -112,9 +108,8 @@ client.index({
 		"skitID": 2,
 		"ownerID": 2,
 		"content": "Save your money!!",
-		"likes": 420,
-		"isReply": "N",
-		"replyTo": 0
+		"replyTo": [0],
+		"replies": [-1]
 	}
 }, function(err, resp, status) {
 	if(err){
@@ -130,9 +125,8 @@ client.index({
 		"skitID": 3,
 		"ownerID": 3,
 		"content": "Pittsbugh is the best",
-		"likes": 420,
-		"isReply": "N",
-		"replyTo": 0
+		"replyTo": [-1],
+		"replies": [-1]
 	}
 }, function(err, resp, status) {
 	if(err){
@@ -148,9 +142,8 @@ client.index({
 		"skitID": 4,
 		"ownerID": 4,
 		"content": "My name is mark markimark",
-		"likes": 420,
-		"isReply": "N",
-		"replyTo": 0
+		"replyTo": [-1],
+		"replies": [-1]
 	}
 }, function(err, resp, status) {
 	if(err){
@@ -166,9 +159,25 @@ client.index({
 		"skitID": 5,
 		"ownerID": 3,
 		"content": "Matt is a piece of shit",
-		"likes": 420,
-		"isReply": "N",
-		"replyTo": 0
+		"replyTo": [-1],
+		"replies": [6]
+	}
+}, function(err, resp, status) {
+	if(err){
+		console.log(err);
+	}
+	console.log(resp);
+});
+
+client.index({
+	index: "skits",
+	type: "skit",
+	body: {
+		"skitID": 6,
+		"ownerID": 1,
+		"content": "So is nate",
+		"replyTo": [5],
+		"replies": [-1]
 	}
 }, function(err, resp, status) {
 	if(err){
@@ -186,6 +195,11 @@ app.get('/getSkits', function (req, res){
 	var hits = "";
 	var ids = query.ids.split(',');
 
+	//We will search for all the skits that belong to the IDs listed
+	//this will find not only the owner of that page but also their
+	//friends if it is the current user's home page. If it is some 
+	//user other than the one currently logged in it will only gather
+	//their skits
 	client.search({
 		index: 'skits',
 		body: {
@@ -198,9 +212,8 @@ app.get('/getSkits', function (req, res){
 		},
 	}).then(function(resp){
 		if(resp.hits.total > 0){
-			console.log(resp.hits);
 			resp.hits.hits.forEach(function(hit){
-				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.likes + "," + hit._source.skitID + "\n");
+				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "," + hit._source.replyTo + "|" + hit._source.replies + "\n");
 			});
 		} else {
 			console.log("No skits");
@@ -218,7 +231,51 @@ app.get('/getSkits', function (req, res){
 			res.end();
 		}
 	});
-})
+});
+
+
+/**
+	Gets a reply's Content, and ownerID
+*/
+app.get('/getReply', function (req, res){
+	var url_parse = url.parse(req.url, true);
+	var query = url_parse.query;
+	var hits = "";
+
+	//Look up the skit by ID
+	client.search({
+		index: 'skits',
+		body: {
+			query: {
+				match: {
+					skitID: query.id
+				}
+			}
+		},
+	}).then(function(resp){
+		if(resp.hits.total > 0){
+			
+			//If we have a hit, and it should only be one then we will return data about that skit for PHP
+			resp.hits.hits.forEach(function(hit){
+				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "\n");
+			});
+		} else {
+			console.log("No skits");
+		}
+		res.end();
+	}, function(err){
+		if(err){
+			console.trace(err.message);
+			res.statusCode = 500;
+			res.setHeader('Content-Type', 'text/plain');
+			res.end();
+		} else {
+			res.statusCode = 200;
+			res.setHeader('Content-Type', 'text/plain');
+			res.end();
+		}
+	});
+});
 
 
 /*
@@ -230,6 +287,7 @@ app.post('/deleteSkit', function(req, res){
 		res.end();
 	}
 
+	// Make sure the data is not too big and going to ruin server's RAM and DOS us
 	var body = '';
 	req.on('data', function(data){
 		if(data.length > 1e6){
@@ -239,6 +297,7 @@ app.post('/deleteSkit', function(req, res){
 		}
 	});
 
+	//Search the Skit we want to delete
 	client.search({
 		index: 'skits',
 		body: {
@@ -251,7 +310,11 @@ app.post('/deleteSkit', function(req, res){
 		}
 	}).then(function(resp){
 		if(resp.hits.total == 1){
-			console.log(resp.hits.hits[0]._source);
+
+			//We have a hit and so now we will check if this skit is a reply
+			var originalSkitToUpdate = resp.hits.hits[0]._source.replyTo;
+
+			//Delete the Skit
 			client.delete({
 				index: 'skits',
 				type: 'skit',
@@ -260,7 +323,64 @@ app.post('/deleteSkit', function(req, res){
 			}, function(err, resp, status) {
 				console.log(err);
 			});
-			res.end();
+
+			//If it is a reply we need to update the one being replied to
+			if(originalSkitToUpdate[0] != -1){
+
+				client.search({
+					index: 'skits',
+					type: 'skit',
+					body: {
+						query: {
+							match: {
+								skitID: originalSkitToUpdate[0]
+							}
+						}
+					}
+				}).then(function(resp){
+
+					//Make sure we actually have a hit
+					if(resp.hits.total != 0){
+
+						//Get its current replies array and splice out the skit we just deleted
+						var repliesArr = resp.hits.hits[0]._source.replies;
+
+						if(repliesArr.length == 1){
+							repliesArr = [-1];
+						} else {
+							var index = repliesArr.indexOf(req.body.skitID);
+							if(index > -1){
+								repliesArr.splice(req.body.skitID, 1);
+							} else {
+								res.end();
+							}
+						}
+
+						//Update that original Skit
+						client.update({
+							index: 'skits',
+							type: 'skit',
+							id: resp.hits.hits[0]._id,
+							body: {
+								doc: {
+									replies: repliesArr
+								}
+							},
+							refresh: true
+						}).then(function(resp){
+							res.end();
+						});
+					} else {
+						res.write("Error updating replied to Skit!");
+						res.end();
+					}
+				});
+
+
+			} else {
+				res.write("Hi");
+				res.end();
+			}
 		} else {
 			res.write("Error deleting Skit.");
 			res.end();
@@ -278,6 +398,7 @@ app.post('/addSkit', function(req, res){
 		res.end();
 	}
 
+	//Make sure the data is not too big to hopefully prevent DOS
 	var body = '';
 	req.on('data', function(data){
 		if(data.length > 1e6){
@@ -287,16 +408,42 @@ app.post('/addSkit', function(req, res){
 		}
 	});
 
+	//Skit is too large, deny it
+	if(req.body.content.length > 140){
+		res.write("Error, creating Skit.");
+		res.write("Skit too long");
+		res.end();
+	}
+
+	//Otherwise, we will need to get the current skitID so that we can add another skit
+	//without messing up the ordering. The skitID can be incremented by the Rails server
+	//when creating a reply Skit
+	client.search({
+		index: 'skits',
+		body:{ 
+			sort: [{ "skitID": {"order": "desc"} }],
+			size: 1,
+			query: {"match_all": {}}
+		}
+	}, function(err, resp, status){
+		if(err){
+			res.write("Error creating Skit.");
+			res.end();
+		} else {
+			skitID = resp.hits.hits[0]._source.skitID;
+		}
+	});
+
+	//Create the new skit
 	client.index({
 		index: "skits",
 		type: "skit",
 		body: {
-			"skitID": skitID++,
+			"skitID": skitID + 1,
 			"ownerID": req.body.user_id,
 			"content": req.body.content,
-			"likes": 0,
-			"isReply": "N",
-			"replyTo": 0
+			"replyTo": -1,
+			"replies": [-1]
 		},
 		refresh: true
 	}, function(err, resp, status) {
@@ -308,6 +455,7 @@ app.post('/addSkit', function(req, res){
 		}
 	});
 });
+
 
 app.listen(61234, function(){
 	console.log("Dev app listening on 61234");
