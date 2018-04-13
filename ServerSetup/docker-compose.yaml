@@ -2,26 +2,45 @@ version: '3'
 services:
   mysql:
     build: ./mysql/
+
+  elasticsearch:
+    image: elasticsearch
+  
+  kibana:
+    image:kibana
+    ports:
+      - 5601:5601
+
+  rails:
+    build: ./railsServer/
+
+  flask:
+    build: ./flaskServer/
+  
   apache1:
     build: ./apache1/
     depends_on:
       - varnish1
       - varnish2
       - mysql
+  
   varnish1:
     build: ./varnish1/
     depends_on:
       - mysql
+  
   apache2:
     build: ./apache2/
     depends_on:
       - varnish1
       - varnish2
       - mysql
+  
   varnish2:
     build: ./varnish2/
     depends_on:
       - mysql
+  
   haproxy:
     build: ./haproxy/
     ports:

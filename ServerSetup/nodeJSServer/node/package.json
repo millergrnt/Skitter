@@ -1,0 +1,26 @@
+{
+  "name": "Skitter",
+  "version": "1.0.0",
+  "description": "Skitter",
+  "main": "skitBackend.js",
+  "scripts": {
+    "dev": "nodemon skitBackend.js",
+    "start": "node skitBackend.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/millergrnt/Skitter.git"
+  },
+  "author": "Grant Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/millergrnt/Skitter"
+  },
+  "homepage": "https://github.com/millergrnt/Skitter",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "elasticsearch": "^14.2.1",
+    "express": "^4.16.3",
+    "nodemon": "^1.14.11"
+  }
+}
