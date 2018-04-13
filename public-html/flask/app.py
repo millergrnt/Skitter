@@ -1,97 +1,102 @@
+"""Author: Grant Miller <gem1086@gmail.com>
+Purpose: run the following and followers portion of Skitter"""
+
+from pprint import pprint
+from flask_mysqldb import MySQL
 from flask import Flask
 from flask import request
-from flask.ext.mysql import MySQL
-from pprint import pprint
-app = Flask(__name__)
+APP = Flask(__name__)
 
-mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
-app.config['MYSQL_DATABASE_DB'] = 'Skitter'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
+MYSQLDB = MySQL()
+APP.config['MYSQL_DATABASE_USER'] = 'root'
+APP.config['MYSQL_DATABASE_PASSWORD'] = 'root'
+APP.config['MYSQL_DATABASE_DB'] = 'Skitter'
+APP.config['MYSQL_DATABASE_HOST'] = 'localhost'
+MYSQLDB.init_app(APP)
 
-#Searches the database for users that match the GET parameter
-@app.route("/searchUsers", methods=['GET'])
+
+@APP.route("/searchUsers", methods=['GET'])
 def users():
-	username = request.args.get('query')
-	conn = mysql.connect()
-	cur = conn.cursor()
+    """Searches the database for users that match the GET parameter"""
+    username = request.args.get('query')
+    cur = MYSQLDB.connection.cursor()
 
-	username = username + "%"
+    username = username + "%"
 
-	cur.execute("SELECT userid FROM Users WHERE username LIKE %s;", (username,))
-	data = cur.fetchall()
-	pprint(data)
+    cur.execute("SELECT userid FROM Users WHERE username LIKE %s;",
+                (username,))
+    data = cur.fetchall()
+    pprint(data)
 
-	final = ""
-	i = 0
-	while i < len(data):
-		final += ", "
-		final += str(data[i][0])
-		i += 1
-	final = final[2:]
+    final = ""
+    i = 0
+    while i < len(data):
+        final += ", "
+        final += str(data[i][0])
+        i += 1
+    final = final[2:]
 
-	return final
-
-
-#Adds a friend to the User specified in the GET parameters
-@app.route("/addFriend", methods=['GET'])
-def addFriend():
-	idToAdd = request.args.get('id')
-	currID = request.args.get('currID')
-
-	newFriendList = getNewList(currID, idToAdd)
-
-	conn = mysql.connect()
-	cur = conn.cursor()
-	cur.execute("UPDATE Users SET following = %s WHERE userid = %s;", (newFriendList, int(currID),))
-	conn.commit()
-
-	return "Success"
-
-#Gets the old friend list from the Database and then creates the new list and returns it
-def getNewList(userid, idToAdd):
-	conn = mysql.connect()
-	cur = conn.cursor()
-	cur.execute("SELECT following FROM Users WHERE userid = %s;", (userid,))
-
-	data = cur.fetchall()
-	newFriendList = data[0][0] + "," + str(idToAdd)
-
-	return newFriendList
+    return final
 
 
-#Removes the specified friend from the list
-@app.route("/removeFriend", methods=['GET'])
-def removeFriend():
-	idToRemove = request.args.get('id')
-	currID = request.args.get('currID')
+@APP.route("/addFriend", methods=['GET'])
+def add_friend():
+    """Adds a friend to the User specified in the GET parameters"""
+    id_to_add = request.args.get('id')
+    curr_id = request.args.get('currID')
 
-	updatedList = updateList(currID, idToRemove)
+    new_friend_list = get_new_list(curr_id, id_to_add)
 
-	conn = mysql.connect()
-	cur = conn.cursor()
-	cur.execute("UPDATE Users SET following = %s WHERE userid = %s;", (updatedList, currID))
-	conn.commit()
-	data = cur.fetchone()
+    cur = MYSQLDB.connection.cursor()
+    cur.execute("UPDATE Users SET following = %s WHERE userid = %s;",
+                (new_friend_list, int(curr_id),))
+    cur.commit()
 
-	return ""
+    return "Success"
 
-def updateList(userid, idToRemove):
-	conn = mysql.connect()
-	cur = conn.cursor()
-	cur.execute("SELECT following FROM Users WHERE userid = %s;", (userid,))
 
-	data = cur.fetchall()
-	friendList = data[0][0]
-	if(friendList == ""):
-		return "Error Removing Friend - You have no friends"
-		
-	newString = ""
-	for x in friendList.split(','):
-		if x != idToRemove:
-			newString = newString + x + ","
-	newString = newString[:len(newString) - 1]
+def get_new_list(userid, id_to_add):
+    """Gets the old friend list from the Database and
+    then creates the new list and returns it"""
+    cur = MYSQLDB.connection.cursor()
+    cur.execute("SELECT following FROM Users WHERE userid = %s;", (userid,))
 
-	return newString
+    data = cur.fetchall()
+    new_friend_list = data[0][0] + "," + str(id_to_add)
+
+    return new_friend_list
+
+
+@APP.route("/removeFriend", methods=['GET'])
+def remove_friend():
+    """Removes the specified friend from the list"""
+    id_to_remove = request.args.get('id')
+    curr_id = request.args.get('currID')
+
+    updated_list = update_the_list(curr_id, id_to_remove)
+
+    cur = MYSQLDB.connection.cursor()
+    cur.execute("UPDATE Users SET following = %s WHERE userid = %s;",
+                (updated_list, curr_id))
+    cur.commit()
+
+    return ""
+
+
+def update_the_list(userid, id_to_remove):
+    """Updates the list by creating a new list without the id to remove"""
+    cur = MYSQLDB.connection.cursor()
+    cur.execute("SELECT following FROM Users WHERE userid = %s;", (userid,))
+
+    data = cur.fetchall()
+    friend_list = data[0][0]
+    if friend_list == "":
+        return "Error Removing Friend - You have no friends"
+
+    new_string = ""
+    for friend in friend_list.split(','):
+        if friend != id_to_remove:
+            new_string = new_string + friend + ","
+    new_string = new_string[:len(new_string) - 1]
+
+    return new_string
