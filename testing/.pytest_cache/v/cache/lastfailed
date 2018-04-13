@@ -1,0 +1,4 @@
+{
+  "initial_test.py::TestTestingFramework::test_follow_user": true,
+  "initial_test.py::TestTestingFramework::test_homepage": true
+}
