@@ -2,4 +2,4 @@ FROM mysql
 
 ADD . .
 
-CMD mysqld_safe
+CMD /bin/bash -c "mysqld_safe &"
