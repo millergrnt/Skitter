@@ -9,4 +9,3 @@ COPY . .
 WORKDIR ruby/app/
 
 CMD ["rails", "server"]
-

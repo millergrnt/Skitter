@@ -5,42 +5,55 @@ services:
 
   elasticsearch:
     image: elasticsearch
-  
-  kibana:
-    image:kibana
-    ports:
-      - 5601:5601
+    depends_on:
+      - mysql
+
+  #kibana:
+   # image:kibana
+    #ports:
+    #  - "5601:5601"
+
+  node:
+    build: ./nodeJSServer/
+    depends_on:
+      - elasticsearch
 
   rails:
     build: ./railsServer/
+    depends_on:
+       - node
 
   flask:
     build: ./flaskServer/
-  
+    depends_on:
+      - rails
+
   apache1:
     build: ./apache1/
     depends_on:
       - varnish1
       - varnish2
-      - mysql
-  
+      - flask
+     # - kibana
+
   varnish1:
     build: ./varnish1/
     depends_on:
       - mysql
-  
+
   apache2:
     build: ./apache2/
     depends_on:
       - varnish1
       - varnish2
-      - mysql
-  
+      - flask
+      #- kibana
+
   varnish2:
     build: ./varnish2/
     depends_on:
       - mysql
-  
+
   haproxy:
     build: ./haproxy/
     ports:
