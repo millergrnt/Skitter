@@ -6,23 +6,8 @@ if(isset($_GET['id'])){
 	$id_to_get = $_GET['id'];
 }
 $id_to_get = strip_tags($id_to_get);
-$username = "";
-$email = "";
-$profile_pic = "";
-$friends = "";
-$stmt = $conn->prepare("SELECT username, email, profile_pic, following FROM Users WHERE userid = ?;");
-$stmt->bind_param("i", $id_to_get);
-if(!$stmt->execute()){
-	print "Error in executing command";
-}
+include_once('php/getUserData.php');
 
-$stmt->bind_result($username, $email, $profile_pic, $friends);
-$stmt->fetch();
-if(isset($userid)){
-	die("Error setting username: username already being used<br>");
-}
-
-$stmt->close();
 $_SESSION['token'] = bin2hex(random_bytes(32));
 $_SESSION['randomString'] = bin2hex(random_bytes(32));
 

@@ -1,15 +1,13 @@
 <?php
 session_start();
 include_once("php/sqlConnect.php");
-include_once('php/getSession.php');
-
-#If we are getting someone else's homepage then we use that id
+$id_to_get = 1;
+$_SESSION['user_ID'] = $id_to_get;
 if(isset($_GET['id'])){
 	$id_to_get = $_GET['id'];
 }
 $id_to_get = strip_tags($id_to_get);
-
-include_once("php/getUserData.php");
+include_once('php/getUserData.php');
 
 $_SESSION['token'] = bin2hex(random_bytes(32));
 $_SESSION['randomString'] = bin2hex(random_bytes(32));
