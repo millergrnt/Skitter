@@ -2,6 +2,11 @@ version: '3'
 services:
   mysql:
     build: ./mysql/
+#    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "mysql"
+      MYSQL_USER: "root"
 
   elasticsearch:
     image: elasticsearch
