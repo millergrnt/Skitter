@@ -12,11 +12,11 @@
 	);
 
 	$context = stream_context_create($options);
-	$result = file_get_contents("http://localhost:61234/addSkit", false, $context);
+	$result = file_get_contents("http://172.18.0.6:61234/addSkit", false, $context);
 
 	if(strcmp($result, "Error creating Skit.") == 0){
 		die("Error adding skit.");
 	}
 
-	header("Location: http://grantimac.student.rit.edu/?id=" . $user_id);
+	header("Location: http://localhost/?id=" . $user_id);
 ?>

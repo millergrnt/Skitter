@@ -12,7 +12,7 @@ if($_SESSION['user_ID'] == $id_to_get){
 	$thisUserID = strval($_SESSION['user_ID']);
 
 	//Get the skit data
-	$url = "http://localhost:61234/getSkits?ids=";
+	$url = "http://172.18.0.6:61234/getSkits?ids=";
 	$url = $url . $friends . ",1";
 	$skitData = file_get_contents($url);
 	foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
@@ -68,7 +68,7 @@ if($_SESSION['user_ID'] == $id_to_get){
 					<?php
 						if($replyList[0] != -1){
 							foreach($replyList as $replyID){
-								$url = "http://localhost:61234/getReply?id=";
+								$url = "http://172.18.0.6:61234/getReply?id=";
 								$url = $url . $replyID;
 								$replyData = file_get_contents($url);
 								$replyData = explode(",", $replyData);
@@ -93,7 +93,7 @@ if($_SESSION['user_ID'] == $id_to_get){
 							<p id="replyContent"><?=$replyData[1]?></p>
 						</div>
 					<?php
-							} 
+							}
 						}?>
 					</div>
 					<?php
@@ -128,7 +128,7 @@ if($_SESSION['user_ID'] == $id_to_get){
 } else {
 	//We are not on our own page so we only want to see that user's posts
 	//Not their friends or our friends or our posts
-	$url = "http://localhost:61234/getSkits?ids=";
+	$url = "http://172.18.0.6:61234/getSkits?ids=";
 	$url = $url . $id_to_get;
 	$skitData = file_get_contents($url);
 	foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){

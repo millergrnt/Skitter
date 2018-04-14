@@ -1,5 +1,6 @@
 <?php
-	$servername = 'localhost';
+	#THIS NEEDS TO BE FIXED WITH MYSQL
+	$servername = '172.18.0.2';
 	$dbuname = 'root';
 	$dbpass = 'root';
 	$dbname = 'Skitter';

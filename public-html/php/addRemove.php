@@ -25,14 +25,14 @@
 
 	$friends = explode(",", $friends);
 	if(!in_array($idToAddRemove, $friends)){
-		$url = "http://localhost:5000/addFriend?id=";
+		$url = "http://172.18.0.8:5000/addFriend?id=";
 		$url = $url . $idToAddRemove . "&currID=" . $_SESSION['user_ID'];
 		$add = file_get_contents($url);
 		if(strcmp($add, "Error") == 0){
 			die("Error Adding Friend");
 		}
 	} else {
-		$url = "http://localhost:5000/removeFriend?id=";
+		$url = "http://172.18.0.8:5000/removeFriend?id=";
 		$url = $url . $idToAddRemove . "&currID=" . $_SESSION['user_ID'];
 		$remove = file_get_contents($url);
 		if(strcmp($remove, "Error") == 0){
@@ -41,5 +41,5 @@
 	}
 
 	$stmt->close();
-	header("Location: http://grantimac.student.rit.edu/listFriends.php?id=" . $userid);
+	header("Location: http://localhost/listFriends.php?id=" . $userid);
 ?>

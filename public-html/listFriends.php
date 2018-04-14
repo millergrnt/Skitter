@@ -108,7 +108,7 @@ $token = $_SESSION['token'];
 
 					$stmt->close();
 
-					$url = "http://localhost:61234/getSkits?ids=";
+					$url = "http://172.18.0.6:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
@@ -179,12 +179,12 @@ $token = $_SESSION['token'];
 				<div id="friends" class="container-fluid">
 					<?php
 						if(isset($_POST['query'])){
-							$url = "http://localhost:5000/searchUsers?query=";
+							$url = "http://172.18.0.8:5000/searchUsers?query=";
 							$searchTerm = $_POST['query'];
 							$fullURL = $url . $searchTerm;
-							$friends = file_get_contents($fullURL);	
+							$friends = file_get_contents($fullURL);
 						}
-						
+
 						$friends = explode(",", $friends);
 						foreach ($friends as &$friendNum) {
 							$friendNum = trim($friendNum);

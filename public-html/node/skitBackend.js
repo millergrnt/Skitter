@@ -16,7 +16,7 @@ var skitID = 7;
 	Create the elastic search object
 */
 var client = new elasticsearch.Client({
-	host: 'localhost:9200',
+	host: '172.18.0.5:9200',
 	log: 'trace'
 });
 
@@ -197,7 +197,7 @@ app.get('/getSkits', function (req, res){
 
 	//We will search for all the skits that belong to the IDs listed
 	//this will find not only the owner of that page but also their
-	//friends if it is the current user's home page. If it is some 
+	//friends if it is the current user's home page. If it is some
 	//user other than the one currently logged in it will only gather
 	//their skits
 	client.search({
@@ -254,7 +254,7 @@ app.get('/getReply', function (req, res){
 		},
 	}).then(function(resp){
 		if(resp.hits.total > 0){
-			
+
 			//If we have a hit, and it should only be one then we will return data about that skit for PHP
 			resp.hits.hits.forEach(function(hit){
 				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "\n");
@@ -420,7 +420,7 @@ app.post('/addSkit', function(req, res){
 	//when creating a reply Skit
 	client.search({
 		index: 'skits',
-		body:{ 
+		body:{
 			sort: [{ "skitID": {"order": "desc"} }],
 			size: 1,
 			query: {"match_all": {}}

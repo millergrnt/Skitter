@@ -54,6 +54,7 @@ class TestTestingFramework(unittest.TestCase):
 
 
 	#Test Adding and Removing Skits
+	#NodeJS resides at 172.18.0.6
 	def test_get_skits(self):
 		self.assertEqual(1 + 1, 2)
 
@@ -69,14 +70,14 @@ class TestTestingFramework(unittest.TestCase):
 
 	#Test following and unfollowing
 	def test_follow_user(self):
-		url = "http://localhost:5000/addFriend?id=2&currID=1"
+		url = "http://172.18.0.8:5000/addFriend?id=2&currID=1"
 		requests.get(url)
 		cur.execute("SELECT following FROM Users WHERE userid = 1")
 		following = cur.fetch()
 		self.assert(2 in following)
 
 	def test_unfollow_user(self):
-		url = "http://localhost:5000/removeFriend?id=2&currID=1"
+		url = "http://172.18.0.8:5000/removeFriend?id=2&currID=1"
 		requests.get(url)
 		cur.execute("SELECT following FROM Users WHERE userid = 1")
 		following = cur.fetch()
@@ -84,7 +85,7 @@ class TestTestingFramework(unittest.TestCase):
 
 	def test_search_users(self):
 		cur.execute("SELECT * FROM Users WHERE username LIKE taff")
-		url = "http://localhost:5000/searchUsers?query=taff"
+		url = "http://172.18.0.8:5000/searchUsers?query=taff"
 		r = requests.get(url)
 		for line, user in zip(r.text, cur.fetchall):
 			self.assertEqual(line, user)
@@ -92,7 +93,7 @@ class TestTestingFramework(unittest.TestCase):
 
 	#Test add reply
 	def test_add_reply(self):
-		url = "http://localhost:3000/add_skit_reply/result?user_id=1&content=testing_comment&originalSkitID=1"
+		url = "http://172.18.0.7:3000/add_skit_reply/result?user_id=1&content=testing_comment&originalSkitID=1"
 		requests.get(url)
 		r = requests.get("http://localhost/?id=1")
 		print(r)

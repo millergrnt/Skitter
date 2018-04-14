@@ -6,7 +6,7 @@
 	$username = $_POST['displayName'];
 	$email = $_POST['email'];
 	$file = $_FILES['fileToUpload']['name'];
-	
+
 	$calc = hash_hmac('sha256', $_SESSION['randomString'], $_SESSION['token']);
 	if(!hash_equals($calc, $_POST['token'])){
 		die("ERROR IN TOKEN");
@@ -101,7 +101,7 @@
 		}
 	}
 
-	header("Location: http://grantimac.student.rit.edu/?id=" . $_SESSION['user_ID']);
+	header("Location: http://localhost/?id=" . $_SESSION['user_ID']);
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);
