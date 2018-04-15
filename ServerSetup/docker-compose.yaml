@@ -1,12 +1,12 @@
 version: '3'
 services:
   mysql:
-    build: ./mysql/
-#    image: mariadb:latest
+    image: mariadb:latest
     environment:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_DATABASE: "mysql"
       MYSQL_USER: "root"
+    command: mysqld
 
   elasticsearch:
     image: elasticsearch
@@ -68,3 +68,8 @@ services:
       - varnish2
       - apache1
       - apache2
+
+  dbinitiator:
+    build: ./initiator/
+    depends_on:
+      - haproxy
