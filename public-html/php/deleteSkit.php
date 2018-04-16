@@ -17,7 +17,7 @@
 	);
 
 	$context = stream_context_create($options);
-	$result = file_get_contents("http://172.18.0.6:61234/deleteSkit", false, $context);
+	$result = file_get_contents("http://serversetup_node_1:61234/deleteSkit", false, $context);
 
 	if(strcmp($result, "Error deleting Skit.") == 0){
 		die("Error removing skit.");

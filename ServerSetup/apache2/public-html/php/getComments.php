@@ -1,7 +1,7 @@
 <?php
 	if($replyList[0] != -1){
 		foreach($replyList as $replyID){
-			$url = "http://172.18.0.6:61234/getReply?id=";
+			$url = "http://serversetup_node_1:61234/getReply?id=";
 			$url = $url . $replyID;
 			$replyData = file_get_contents($url);
 			$replyData = explode(",", $replyData);

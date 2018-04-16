@@ -9,6 +9,7 @@ services:
     command: mysqld
 
   elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
     image: elasticsearch
     depends_on:
       - mysql

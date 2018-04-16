@@ -25,14 +25,14 @@
 
 	$friends = explode(",", $friends);
 	if(!in_array($idToAddRemove, $friends)){
-		$url = "http://172.18.0.8:5000/addFriend?id=";
+		$url = "http://serversetup_flask_1:5000/addFriend?id=";
 		$url = $url . $idToAddRemove . "&currID=" . $_SESSION['user_ID'];
 		$add = file_get_contents($url);
 		if(strcmp($add, "Error") == 0){
 			die("Error Adding Friend");
 		}
 	} else {
-		$url = "http://172.18.0.8:5000/removeFriend?id=";
+		$url = "http://serversetup_flask_1:5000/removeFriend?id=";
 		$url = $url . $idToAddRemove . "&currID=" . $_SESSION['user_ID'];
 		$remove = file_get_contents($url);
 		if(strcmp($remove, "Error") == 0){

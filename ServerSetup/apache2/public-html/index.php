@@ -93,7 +93,7 @@ $deleteToken = $_SESSION['deleteToken'];
 					$stmt->bind_result($friends);
 					$stmt->fetch();
 					$stmt->close();
-					$url = "http://172.18.0.6:61234/getSkits?ids=";
+					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
@@ -167,7 +167,7 @@ $deleteToken = $_SESSION['deleteToken'];
 					$thisUserID = strval($_SESSION['user_ID']);
 
 					//Get the skit data
-					$url = "http://172.18.0.6:61234/getSkits?ids=";
+					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends . ",1";
 					$skitData = file_get_contents($url);
 					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
@@ -222,7 +222,7 @@ $deleteToken = $_SESSION['deleteToken'];
 									<div id="personalPostComment">
 									<?php
 										if($line_arr[3] != -1){
-											$url = "http://172.18.0.6:61234/getReply?id=";
+											$url = "http://serversetup_node_1:61234/getReply?id=";
 											$url = $url . $line_arr[3];
 											$originalData = file_get_contents($url);
 											$originalData = explode(",", $originalData);
@@ -253,7 +253,7 @@ $deleteToken = $_SESSION['deleteToken'];
 										}
 										if($replyList[0] != -1){
 											foreach($replyList as $replyID){
-												$url = "http://172.18.0.6:61234/getReply?id=";
+												$url = "http://serversetup_node_1:61234/getReply?id=";
 												$url = $url . $replyID;
 												$replyData = file_get_contents($url);
 												$replyData = explode(",", $replyData);
@@ -318,7 +318,7 @@ $deleteToken = $_SESSION['deleteToken'];
 				} else {
 					//We are not on our own page so we only want to see that user's posts
 					//Not their friends or our friends or our posts
-					$url = "http://172.18.0.6:61234/getSkits?ids=";
+					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $id_to_get;
 					$skitData = file_get_contents($url);
 					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
@@ -345,7 +345,7 @@ $deleteToken = $_SESSION['deleteToken'];
 									<div id="personalPostComment">
 										<?php
 											if($line_arr[3] != -1){
-												$url = "http://172.18.0.6:61234/getReply?id=";
+												$url = "http://serversetup_node_1:61234/getReply?id=";
 												$url = $url . $line_arr[3];
 												$originalData = file_get_contents($url);
 												$originalData = explode(",", $originalData);
@@ -375,7 +375,7 @@ $deleteToken = $_SESSION['deleteToken'];
 											}
 											if($replyList[0] != -1){
 												foreach($replyList as $replyID){
-													$url = "http://172.18.0.6:61234/getReply?id=";
+													$url = "http://serversetup_node_1:61234/getReply?id=";
 													$url = $url . $replyID;
 													$replyData = file_get_contents($url);
 													$replyData = explode(",", $replyData);

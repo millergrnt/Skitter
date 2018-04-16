@@ -1,7 +1,7 @@
 const http = require('http');
 const elasticsearch = require('elasticsearch');
 const url = require('url');
-const hostname = '172.18.0.6';
+const hostname = 'localhost;
 const port = 61234;
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -16,7 +16,7 @@ var skitID = 7;
 	Create the elastic search object
 */
 var client = new elasticsearch.Client({
-	host: '172.18.0.5:9200',
+	host: 'elasticsearch_1:9200',
 	log: 'trace'
 });
 

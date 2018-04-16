@@ -11,7 +11,7 @@ MYSQLDB = MySQL()
 APP.config['MYSQL_DATABASE_USER'] = 'root'
 APP.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 APP.config['MYSQL_DATABASE_DB'] = 'Skitter'
-APP.config['MYSQL_DATABASE_HOST'] = '172.18.0.2'
+APP.config['MYSQL_DATABASE_HOST'] = 'serversetup_mysql_1'
 MYSQLDB.init_app(APP)
 
 
