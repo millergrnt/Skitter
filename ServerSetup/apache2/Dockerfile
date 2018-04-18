@@ -25,4 +25,4 @@ RUN cp -r public-html/* /var/www/html/
 RUN mv ports.conf /etc/apache2/
 RUN mv 000-default.conf /etc/apache2/sites-enabled/
 
-CMD apachectl -DFOREGROUND
+CMD /bin/bash -c "/etc/init.d/memcached start & " && apachectl -DFOREGROUND

@@ -4,4 +4,4 @@ ADD . .
 
 RUN pip3 install --no-cache-dir -r flask/requirements.txt
 
-CMD cd flask; export FLASK_APP=app.py; flask run
+CMD cd flask; export FLASK_APP=app.py; flask run --host=0.0.0.0

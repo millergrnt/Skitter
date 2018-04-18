@@ -1,10 +1,12 @@
 const http = require('http');
 const elasticsearch = require('elasticsearch');
 const url = require('url');
-const hostname = 'localhost;
-const port = 61234;
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const hostname = 'serversetup_node_1';
+const port = 61234;
+
 var app = express();
 app.use( bodyParser.urlencoded({
 	extended: true
@@ -12,12 +14,15 @@ app.use( bodyParser.urlencoded({
 
 var skitID = 7;
 
-/*
-	Create the elastic search object
-*/
 var client = new elasticsearch.Client({
-	host: 'elasticsearch_1:9200',
-	log: 'trace'
+	host: 'elasticsearch:9200',
+	log: 'trace',
+	maxRetries: 5,
+	requestTimeout: 2000
+}, function(err, resp){
+	console.log(resp);
+	console.log("Error");
+	console.log(err);
 });
 
 
@@ -186,51 +191,67 @@ client.index({
 	console.log(resp);
 });
 
+
 /**
-	getSkits API
+getSkits API
 */
 app.get('/getSkits', function (req, res){
-	var url_parse = url.parse(req.url, true);
-	var query = url_parse.query;
-	var hits = "";
-	var ids = query.ids.split(',');
+var ip = req.connection.remoteAddress;
 
-	//We will search for all the skits that belong to the IDs listed
-	//this will find not only the owner of that page but also their
-	//friends if it is the current user's home page. If it is some
-	//user other than the one currently logged in it will only gather
-	//their skits
-	client.search({
-		index: 'skits',
-		body: {
-			sort: [{ "skitID": {"order": "desc"} }],
-			query: {
-				terms: {
-					ownerID: ids
-				}
-			}
-		},
-	}).then(function(resp){
-		if(resp.hits.total > 0){
-			resp.hits.hits.forEach(function(hit){
-				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "," + hit._source.replyTo + "|" + hit._source.replies + "\n");
-			});
-		} else {
-			console.log("No skits");
-		}
+//Check to make sure we are only allowing docker containers to access node.
+if(!ip.startsWith("172.18.0.")){
+	res.write("You are not allowed to access this item.");
+	res.end();
+} else {
+	var hostPortion = ip.lastIndexOf(".");
+	var hostPortion = ip.slice(hostPortion + 1);
+	if(!(hostPortion < 11)){
+		res.write("You are not allowed to access this item.");
 		res.end();
-	}, function(err){
-		if(err){
-			console.trace(err.message);
-			res.statusCode = 500;
-			res.setHeader('Content-Type', 'text/plain');
-			res.end();
-		} else {
-			res.statusCode = 200;
-			res.setHeader('Content-Type', 'text/plain');
-			res.end();
+	}
+}
+
+var url_parse = url.parse(req.url, true);
+var query = url_parse.query;
+var hits = "";
+var ids = query.ids.split(',');
+
+//We will search for all the skits that belong to the IDs listed
+//this will find not only the owner of that page but also their
+//friends if it is the current user's home page. If it is some
+//user other than the one currently logged in it will only gather
+//their skits
+client.search({
+	index: 'skits',
+	body: {
+		sort: [{ "skitID": {"order": "desc"} }],
+		query: {
+			terms: {
+				ownerID: ids
+			}
 		}
-	});
+	},
+}).then(function(resp){
+	if(resp.hits.total > 0){
+		resp.hits.hits.forEach(function(hit){
+			res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "," + hit._source.replyTo + "|" + hit._source.replies + "\n");
+		});
+	} else {
+		console.log("No skits");
+	}
+	res.end();
+}, function(err){
+	if(err){
+		console.trace(err.message);
+		res.statusCode = 500;
+		res.setHeader('Content-Type', 'text/plain');
+		res.end();
+	} else {
+		res.statusCode = 200;
+		res.setHeader('Content-Type', 'text/plain');
+		res.end();
+	}
+});
 });
 
 
@@ -238,6 +259,21 @@ app.get('/getSkits', function (req, res){
 	Gets a reply's Content, and ownerID
 */
 app.get('/getReply', function (req, res){
+	var ip = req.connection.remoteAddress;
+
+	//Check to make sure we are only allowing docker containers to access node.
+	if(!ip.startsWith("172.18.0.")){
+		res.write("You are not allowed to access this item.");
+		res.end();
+	} else {
+		var hostPortion = ip.lastIndexOf(".");
+		var hostPortion = ip.slice(hostPortion + 1);
+		if(!(hostPortion < 11)){
+			res.write("You are not allowed to access this item.");
+			res.end();
+		}
+	}
+
 	var url_parse = url.parse(req.url, true);
 	var query = url_parse.query;
 	var hits = "";
@@ -282,6 +318,21 @@ app.get('/getReply', function (req, res){
 	Delete Skit API
 */
 app.post('/deleteSkit', function(req, res){
+	var ip = req.connection.remoteAddress;
+
+	//Check to make sure we are only allowing docker containers to access node.
+	if(!ip.startsWith("172.18.0.")){
+		res.write("You are not allowed to access this item.");
+		res.end();
+	} else {
+		var hostPortion = ip.lastIndexOf(".");
+		var hostPortion = ip.slice(hostPortion + 1);
+		if(!(hostPortion < 11)){
+			res.write("You are not allowed to access this item.");
+			res.end();
+		}
+	}
+
 	if(req.method != 'POST'){
 		res.write('Illegal format encountered.');
 		res.end();
@@ -393,6 +444,21 @@ app.post('/deleteSkit', function(req, res){
 	addSkits API
 */
 app.post('/addSkit', function(req, res){
+	var ip = req.connection.remoteAddress;
+
+	//Check to make sure we are only allowing docker containers to access node.
+	if(!ip.startsWith("172.18.0.")){
+		res.write("You are not allowed to access this item.");
+		res.end();
+	} else {
+		var hostPortion = ip.lastIndexOf(".");
+		var hostPortion = ip.slice(hostPortion + 1);
+		if(!(hostPortion < 11)){
+			res.write("You are not allowed to access this item.");
+			res.end();
+		}
+	}
+
 	if(req.method != 'POST'){
 		res.write('Illegal format encountered.');
 		res.end();
@@ -456,7 +522,7 @@ app.post('/addSkit', function(req, res){
 	});
 });
 
-
-app.listen(61234, function(){
-	console.log("Dev app listening on 61234");
+var listener = app.listen(61234, '0.0.0.0', function(){
+	console.log("Server started on port: %d", listener.address().port);
+	console.log("Address: " + listener.address().address);
 });

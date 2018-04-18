@@ -1,3 +1,2 @@
 flask
-flask-mysql
-sqlalchemy
+flask-mysqldb

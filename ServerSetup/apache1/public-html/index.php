@@ -82,7 +82,7 @@ $deleteToken = $_SESSION['deleteToken'];
 				</div>
 				<?php
 
-					//Lists the top 4 most recent friend skits on side bar
+					//Lists the top 5 most recent friend skits on side bar
 					$stmt = $conn->prepare("SELECT following  FROM Users WHERE userid = ?;");
 					$stmt->bind_param("i", $_SESSION['user_ID']);
 
@@ -100,7 +100,7 @@ $deleteToken = $_SESSION['deleteToken'];
 
 					//Split them by new line characters
 					$skits = preg_split("/((\r?\n)|(\r\n?))/", $skitData);
-					while($i < 6){
+					while($i < 5){
 						$line = $skits[$i];
 						if(strlen($line) == 0)
 							break;
