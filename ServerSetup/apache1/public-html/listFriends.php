@@ -127,16 +127,6 @@ $token = $_SESSION['token'];
 							<p id="postContent">
 								<?=$line_arr[1]?>
 							</p>
-							<div id="postData">
-								<div id="likes">
-									<p id="count"><?=$line_arr[2]?></p>
-									<button type="button" id="likeButton"><img id="dataImg" src="img/like.svg" /></button>
-								</div>
-								<div id="comments">
-									<p id="count">1</p>
-									<button type="button" id="commentButton"><img id="dataImg" src="img/chat.svg" /></button>
-								</div>
-							</div>
 						</div>
 					</div>
 				<?php
