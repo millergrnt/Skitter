@@ -319,6 +319,7 @@ form p{
 	margin-top: 45px;
 	border-radius: 2px;
 	text-align: center;
+	margin-bottom: 25px;
 }
 
 #friendPic{
@@ -337,7 +338,7 @@ form p{
 
 a{
 	text-decoration: none;
-	color: black; 
+	color: black;
 }
 
 a:hover{

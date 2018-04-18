@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const hostname = 'serversetup_node_1';
 const port = 61234;
 
+var client;
+
 var app = express();
 app.use( bodyParser.urlencoded({
 	extended: true
@@ -15,7 +17,7 @@ app.use( bodyParser.urlencoded({
 var skitID = 7;
 
 function setupElastic(){
-	var client = new elasticsearch.Client({
+	client = new elasticsearch.Client({
 		host: 'elasticsearch:9200',
 		log: 'trace',
 		maxRetries: 5,
@@ -191,9 +193,11 @@ function setupElastic(){
 		}
 		console.log(resp);
 	});
+
+	return client;
 }
 
-setTimeout(setupElastic, 5000);
+client = setTimeout(setupElastic, 5000);
 
 /**
 getSkits API

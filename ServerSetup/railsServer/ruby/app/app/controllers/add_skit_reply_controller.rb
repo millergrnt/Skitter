@@ -8,7 +8,7 @@ def result
   if @content.length > 140
     @response.save
   else
-    @client = Elasticsearch::Client.new host: 'elasticsearch' log:true
+    @client = Elasticsearch::Client.new host: 'elasticsearch', log:true
     @user_id = Integer(params[:user_id])
     @originalSkitID = Integer(params[:originalSkitID])
 
