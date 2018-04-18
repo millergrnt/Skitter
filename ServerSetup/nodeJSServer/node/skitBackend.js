@@ -14,183 +14,186 @@ app.use( bodyParser.urlencoded({
 
 var skitID = 7;
 
-var client = new elasticsearch.Client({
-	host: 'elasticsearch:9200',
-	log: 'trace',
-	maxRetries: 5,
-	requestTimeout: 2000
-}, function(err, resp){
-	console.log(resp);
-	console.log("Error");
-	console.log(err);
-});
+function setupElastic(){
+	var client = new elasticsearch.Client({
+		host: 'elasticsearch:9200',
+		log: 'trace',
+		maxRetries: 5,
+		requestTimeout: 2000
+	}, function(err, resp){
+		console.log(resp);
+		console.log("Error");
+		console.log(err);
+	});
 
 
-/*
-	Ping the Elasticsearch Cluster to make sure it is alive and well
-*/
-client.ping({
-	requestTimeout: 10000,
-}, function(error) {
-	if(error){
-		console.error('elasticsearch cluster is down!');
-	} else {
-		console.log('All is well');
-	}
-});
+	/*
+		Ping the Elasticsearch Cluster to make sure it is alive and well
+	*/
+	client.ping({
+		requestTimeout: 10000,
+	}, function(error) {
+		if(error){
+			console.error('elasticsearch cluster is down!');
+		} else {
+			console.log('All is well');
+		}
+	});
 
-/**
-	Get rid of any old skits that might be left over from last time I ran the server.
-	This is for testing purposes only
-*/
-client.search({
-	index: 'skits',
-	body: {
-		query: {
-			terms: {
-				ownerID: [0,1,2,3,4]
+	/**
+		Get rid of any old skits that might be left over from last time I ran the server.
+		This is for testing purposes only
+	*/
+	client.search({
+		index: 'skits',
+		body: {
+			query: {
+				terms: {
+					ownerID: [0,1,2,3,4]
+				}
 			}
 		}
-	}
-}).then(function(resp){
-	resp.hits.hits.forEach(function(hit){
-		client.delete({
-			index: 'skits',
-			type: 'skit',
-			id: hit._id
-		}, function(err, resp, status) {
-			console.log(err);
+	}).then(function(resp){
+		resp.hits.hits.forEach(function(hit){
+			client.delete({
+				index: 'skits',
+				type: 'skit',
+				id: hit._id
+			}, function(err, resp, status) {
+				console.log(err);
+			});
 		});
 	});
-});
 
 
 
-/**
-	Let's add in some dummy Skits to start with
-*/
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 0,
-		"ownerID": 1,
-		"content": "Hello World",
-		"replyTo": [-1],
-		"replies": [1, 2]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	/**
+		Let's add in some dummy Skits to start with
+	*/
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 0,
+			"ownerID": 1,
+			"content": "Hello World",
+			"replyTo": [-1],
+			"replies": [1, 2]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
 
-/**
-	Anotha one
-*/
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 1,
-		"ownerID": 1,
-		"content": "This is the second skit",
-		"replyTo": [0],
-		"replies": [-1]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	/**
+		Anotha one
+	*/
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 1,
+			"ownerID": 1,
+			"content": "This is the second skit",
+			"replyTo": [0],
+			"replies": [-1]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
 
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 2,
-		"ownerID": 2,
-		"content": "Save your money!!",
-		"replyTo": [0],
-		"replies": [-1]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 2,
+			"ownerID": 2,
+			"content": "Save your money!!",
+			"replyTo": [0],
+			"replies": [-1]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
 
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 3,
-		"ownerID": 3,
-		"content": "Pittsbugh is the best",
-		"replyTo": [-1],
-		"replies": [-1]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 3,
+			"ownerID": 3,
+			"content": "Pittsbugh is the best",
+			"replyTo": [-1],
+			"replies": [-1]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
 
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 4,
-		"ownerID": 4,
-		"content": "My name is mark markimark",
-		"replyTo": [-1],
-		"replies": [-1]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 4,
+			"ownerID": 4,
+			"content": "My name is mark markimark",
+			"replyTo": [-1],
+			"replies": [-1]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
 
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 5,
-		"ownerID": 3,
-		"content": "Matt is a piece of shit",
-		"replyTo": [-1],
-		"replies": [6]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 5,
+			"ownerID": 3,
+			"content": "Matt is a piece of shit",
+			"replyTo": [-1],
+			"replies": [6]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
 
-client.index({
-	index: "skits",
-	type: "skit",
-	body: {
-		"skitID": 6,
-		"ownerID": 1,
-		"content": "So is nate",
-		"replyTo": [5],
-		"replies": [-1]
-	}
-}, function(err, resp, status) {
-	if(err){
-		console.log(err);
-	}
-	console.log(resp);
-});
+	client.index({
+		index: "skits",
+		type: "skit",
+		body: {
+			"skitID": 6,
+			"ownerID": 1,
+			"content": "So is nate",
+			"replyTo": [5],
+			"replies": [-1]
+		}
+	}, function(err, resp, status) {
+		if(err){
+			console.log(err);
+		}
+		console.log(resp);
+	});
+}
 
+setTimeout(setupElastic, 5000);
 
 /**
 getSkits API
