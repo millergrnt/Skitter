@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS Skitter;
 CREATE DATABASE Skitter;
 USE Skitter;
 

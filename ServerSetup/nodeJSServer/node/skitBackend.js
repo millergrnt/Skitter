@@ -197,68 +197,69 @@ function setupElastic(){
 	return client;
 }
 
-client = setTimeout(setupElastic, 5000);
+client = setTimeout(setupElastic, 7500);
+
 
 /**
 getSkits API
 */
 app.get('/getSkits', function (req, res){
-var ip = req.connection.remoteAddress;
+	var ip = req.connection.remoteAddress;
 
-//Check to make sure we are only allowing docker containers to access node.
-if(!ip.startsWith("172.18.0.")){
-	res.write("You are not allowed to access this item.");
-	res.end();
-} else {
-	var hostPortion = ip.lastIndexOf(".");
-	var hostPortion = ip.slice(hostPortion + 1);
-	if(!(hostPortion < 11)){
+	//Check to make sure we are only allowing docker containers to access node.
+	if(!ip.startsWith("172.18.0.")){
 		res.write("You are not allowed to access this item.");
 		res.end();
-	}
-}
-
-var url_parse = url.parse(req.url, true);
-var query = url_parse.query;
-var hits = "";
-var ids = query.ids.split(',');
-
-//We will search for all the skits that belong to the IDs listed
-//this will find not only the owner of that page but also their
-//friends if it is the current user's home page. If it is some
-//user other than the one currently logged in it will only gather
-//their skits
-client.search({
-	index: 'skits',
-	body: {
-		sort: [{ "skitID": {"order": "desc"} }],
-		query: {
-			terms: {
-				ownerID: ids
-			}
+	} else {
+		var hostPortion = ip.lastIndexOf(".");
+		var hostPortion = ip.slice(hostPortion + 1);
+		if(!(hostPortion < 11)){
+			res.write("You are not allowed to access this item.");
+			res.end();
 		}
-	},
-}).then(function(resp){
-	if(resp.hits.total > 0){
-		resp.hits.hits.forEach(function(hit){
-			res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "," + hit._source.replyTo + "|" + hit._source.replies + "\n");
-		});
-	} else {
-		console.log("No skits");
 	}
-	res.end();
-}, function(err){
-	if(err){
-		console.trace(err.message);
-		res.statusCode = 500;
-		res.setHeader('Content-Type', 'text/plain');
+
+	var url_parse = url.parse(req.url, true);
+	var query = url_parse.query;
+	var hits = "";
+	var ids = query.ids.split(',');
+
+	//We will search for all the skits that belong to the IDs listed
+	//this will find not only the owner of that page but also their
+	//friends if it is the current user's home page. If it is some
+	//user other than the one currently logged in it will only gather
+	//their skits
+	client.search({
+		index: 'skits',
+		body: {
+			sort: [{ "skitID": {"order": "desc"} }],
+			query: {
+				terms: {
+					ownerID: ids
+				}
+			}
+		},
+	}).then(function(resp){
+		if(resp.hits.total > 0){
+			resp.hits.hits.forEach(function(hit){
+				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "," + hit._source.replyTo + "|" + hit._source.replies + "\n");
+			});
+		} else {
+			console.log("No skits");
+		}
 		res.end();
-	} else {
-		res.statusCode = 200;
-		res.setHeader('Content-Type', 'text/plain');
-		res.end();
-	}
-});
+	}, function(err){
+		if(err){
+			console.trace(err.message);
+			res.statusCode = 500;
+			res.setHeader('Content-Type', 'text/plain');
+			res.end();
+		} else {
+			res.statusCode = 200;
+			res.setHeader('Content-Type', 'text/plain');
+			res.end();
+		}
+	});
 });
 
 
@@ -383,6 +384,7 @@ app.post('/deleteSkit', function(req, res){
 			});
 
 			//If it is a reply we need to update the one being replied to
+			console.log(originalSkitToUpdate);
 			if(originalSkitToUpdate[0] != -1){
 
 				client.search({
@@ -433,10 +435,7 @@ app.post('/deleteSkit', function(req, res){
 						res.end();
 					}
 				});
-
-
 			} else {
-				res.write("Hi");
 				res.end();
 			}
 		} else {

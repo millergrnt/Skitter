@@ -22,6 +22,8 @@ RUN mv memcached.conf /etc/memcached.conf
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 RUN cp -r public-html/* /var/www/html/
+RUN mv public-html/ ..
+RUN mv Dockerfile ..
 RUN mv ports.conf /etc/apache2/
 RUN mv 000-default.conf /etc/apache2/sites-enabled/
 

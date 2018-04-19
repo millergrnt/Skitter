@@ -8,10 +8,10 @@ from flask import request
 APP = Flask(__name__)
 
 MYSQLDB = MySQL()
-APP.config['MYSQL_DATABASE_USER'] = 'root'
-APP.config['MYSQL_DATABASE_PASSWORD'] = 'root'
-APP.config['MYSQL_DATABASE_DB'] = 'Skitter'
-APP.config['MYSQL_DATABASE_HOST'] = 'serversetup_mysql_1'
+APP.config['MYSQL_USER'] = 'root'
+APP.config['MYSQL_PASSWORD'] = 'root'
+APP.config['MYSQL_DB'] = 'Skitter'
+APP.config['MYSQL_HOST'] = '172.18.0.2'
 MYSQLDB.init_app(APP)
 
 
@@ -50,7 +50,7 @@ def add_friend():
     cur = MYSQLDB.connection.cursor()
     cur.execute("UPDATE Users SET following = %s WHERE userid = %s;",
                 (new_friend_list, int(curr_id),))
-    cur.commit()
+    MYSQLDB.connection.commit()
 
     return "Success"
 
@@ -78,7 +78,7 @@ def remove_friend():
     cur = MYSQLDB.connection.cursor()
     cur.execute("UPDATE Users SET following = %s WHERE userid = %s;",
                 (updated_list, curr_id))
-    cur.commit()
+    MYSQLDB.connection.commit()
 
     return ""
 
