@@ -26,5 +26,6 @@ RUN mv public-html/ ..
 RUN mv Dockerfile ..
 RUN mv ports.conf /etc/apache2/
 RUN mv 000-default.conf /etc/apache2/sites-enabled/
+RUN chown www-data:www-data uploads
 
 CMD /bin/bash -c "/etc/init.d/memcached start & " && apachectl -DFOREGROUND

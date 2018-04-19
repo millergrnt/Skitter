@@ -237,7 +237,7 @@ $deleteToken = $_SESSION['deleteToken'];
 											$stmt->fetch();
 											if(strlen($originalData[0]) == 0){
 												$originalData[1] = "Original Skit not available, sorry.";
-												$profile_pic = "img/missingSkit.png";
+												$profile_pic = "img/missingSkit.svg";
 												$username = "";
 											}
 
@@ -360,7 +360,7 @@ $deleteToken = $_SESSION['deleteToken'];
 												$stmt->fetch();
 												if(strlen($originalData[0]) == 0){
 													$originalData[1] = "Original Skit not available, sorry.";
-													$profile_pic = "img/missingSkit.png";
+													$profile_pic = "img/missingSkit.svg";
 													$username = "";
 												}
 												$stmt->close();
