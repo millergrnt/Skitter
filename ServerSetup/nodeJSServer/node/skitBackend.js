@@ -79,7 +79,7 @@ function setupElastic(){
 			"skitID": 0,
 			"ownerID": 1,
 			"content": "Hello World",
-			"replyTo": [-1],
+			"replyTo": -1,
 			"replies": [1, 2]
 		}
 	}, function(err, resp, status) {
@@ -99,7 +99,7 @@ function setupElastic(){
 			"skitID": 1,
 			"ownerID": 1,
 			"content": "This is the second skit",
-			"replyTo": [0],
+			"replyTo": 0,
 			"replies": [-1]
 		}
 	}, function(err, resp, status) {
@@ -116,7 +116,7 @@ function setupElastic(){
 			"skitID": 2,
 			"ownerID": 2,
 			"content": "Save your money!!",
-			"replyTo": [0],
+			"replyTo": 0,
 			"replies": [-1]
 		}
 	}, function(err, resp, status) {
@@ -133,7 +133,7 @@ function setupElastic(){
 			"skitID": 3,
 			"ownerID": 3,
 			"content": "Pittsbugh is the best",
-			"replyTo": [-1],
+			"replyTo": -1,
 			"replies": [-1]
 		}
 	}, function(err, resp, status) {
@@ -150,7 +150,7 @@ function setupElastic(){
 			"skitID": 4,
 			"ownerID": 4,
 			"content": "My name is mark markimark",
-			"replyTo": [-1],
+			"replyTo": -1,
 			"replies": [-1]
 		}
 	}, function(err, resp, status) {
@@ -167,7 +167,7 @@ function setupElastic(){
 			"skitID": 5,
 			"ownerID": 3,
 			"content": "Matt is a piece of shit",
-			"replyTo": [-1],
+			"replyTo": -1,
 			"replies": [6]
 		}
 	}, function(err, resp, status) {
@@ -184,7 +184,7 @@ function setupElastic(){
 			"skitID": 6,
 			"ownerID": 1,
 			"content": "So is nate",
-			"replyTo": [5],
+			"replyTo": 5,
 			"replies": [-1]
 		}
 	}, function(err, resp, status) {
@@ -407,12 +407,15 @@ app.post('/deleteSkit', function(req, res){
 						//Get its current replies array and splice out the skit we just deleted
 						var repliesArr = resp.hits.hits[0]._source.replies;
 
+						console.log('replies array: ' + repliesArr);
+
 						if(repliesArr.length == 1){
 							repliesArr = [-1];
 						} else {
 							var index = repliesArr.indexOf(parseInt(skitBeingRemoved));
+							console.log("Index of " + skitBeingRemoved + ": " + index);
 							if(index > -1){
-								repliesArr.splice(req.body.skitID, 1);
+								repliesArr.splice(parseInt(skitBeingRemoved), 1);
 							} else {
 								res.end();
 							}
