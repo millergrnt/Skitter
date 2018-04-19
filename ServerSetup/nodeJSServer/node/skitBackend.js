@@ -341,6 +341,8 @@ app.post('/deleteSkit', function(req, res){
 		}
 	}
 
+	var skitBeingRemoved = req.body.skitID;
+
 	if(req.method != 'POST'){
 		res.write('Illegal format encountered.');
 		res.end();
@@ -368,7 +370,8 @@ app.post('/deleteSkit', function(req, res){
 			}
 		}
 	}).then(function(resp){
-		if(resp.hits.total == 1){
+
+		if(resp.hits.total > 0){
 
 			//We have a hit and so now we will check if this skit is a reply
 			var originalSkitToUpdate = resp.hits.hits[0]._source.replyTo;
@@ -384,8 +387,7 @@ app.post('/deleteSkit', function(req, res){
 			});
 
 			//If it is a reply we need to update the one being replied to
-			console.log(originalSkitToUpdate);
-			if(originalSkitToUpdate[0] != -1){
+			if(originalSkitToUpdate != -1){
 
 				client.search({
 					index: 'skits',
@@ -393,7 +395,7 @@ app.post('/deleteSkit', function(req, res){
 					body: {
 						query: {
 							match: {
-								skitID: originalSkitToUpdate[0]
+								skitID: originalSkitToUpdate
 							}
 						}
 					}
@@ -408,7 +410,7 @@ app.post('/deleteSkit', function(req, res){
 						if(repliesArr.length == 1){
 							repliesArr = [-1];
 						} else {
-							var index = repliesArr.indexOf(req.body.skitID);
+							var index = repliesArr.indexOf(parseInt(skitBeingRemoved));
 							if(index > -1){
 								repliesArr.splice(req.body.skitID, 1);
 							} else {
@@ -430,12 +432,14 @@ app.post('/deleteSkit', function(req, res){
 						}).then(function(resp){
 							res.end();
 						});
+
 					} else {
 						res.write("Error updating replied to Skit!");
 						res.end();
 					}
 				});
 			} else {
+				res.write("");
 				res.end();
 			}
 		} else {
