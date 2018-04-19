@@ -415,7 +415,14 @@ app.post('/deleteSkit', function(req, res){
 							var index = repliesArr.indexOf(parseInt(skitBeingRemoved));
 							console.log("Index of " + skitBeingRemoved + ": " + index);
 							if(index > -1){
-								repliesArr.splice(parseInt(skitBeingRemoved), 1);
+								var tempArr = [];
+								for(i = 0; i < repliesArr.length; i++){
+									if(repliesArr[i] != parseInt(skitBeingRemoved)){
+										tempArr.push(repliesArr[i]);
+									}
+								}
+
+								repliesArr = tempArr;
 							} else {
 								res.end();
 							}
