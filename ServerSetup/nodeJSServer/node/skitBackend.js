@@ -166,7 +166,7 @@ function setupElastic(){
 		body: {
 			"skitID": 5,
 			"ownerID": 3,
-			"content": "Matt is a piece of shit",
+			"content": "Flyers are the greatest hockey team ever, just been a tough week",
 			"replyTo": -1,
 			"replies": [6]
 		}
@@ -183,7 +183,7 @@ function setupElastic(){
 		body: {
 			"skitID": 6,
 			"ownerID": 1,
-			"content": "So is nate",
+			"content": "These ploffs are fire this year...",
 			"replyTo": 5,
 			"replies": [-1]
 		}

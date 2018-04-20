@@ -438,6 +438,7 @@ $deleteToken = $_SESSION['deleteToken'];
 								</div>
 							</div>
 						</div>
+					</div>
 					<?php
 					}
 				}
