@@ -105,7 +105,7 @@ $deleteToken = $_SESSION['deleteToken'];
 						if(strlen($line) == 0)
 							break;
 						//Split the lines by comma and then siphen the data we need from themn
-						$line_arr = explode(",", $line);
+						$line_arr = json_decode($line, true);
 						$skitOwner = $line_arr[0];
 
 						$skitUsername = "";
@@ -130,9 +130,7 @@ $deleteToken = $_SESSION['deleteToken'];
 							<h5><?=$skitUsername?></h5>
 						</div>
 						<div id="content">
-							<p id="postContent">
-								<?=$line_arr[1]?>
-							</p>
+							<p id="postContent"><?=$line_arr[1]?></p>
 						</div>
 					</div>
 				</a>
@@ -175,9 +173,9 @@ $deleteToken = $_SESSION['deleteToken'];
 						//If the line of data is empty just leave the for loop because we have reached illegal data.
 						if(strlen($line) == 0)
 							break;
-						$replyIDList = explode("|", $line);
-						$replyList = explode(",", $replyIDList[1]);
-						$line_arr = explode(",", $replyIDList[0]);
+
+						$line_arr = json_decode($line, true);
+						$replyList = $line_arr[4];
 						$skitOwner = $line_arr[0];
 
 						//If the owner of this skit we are loading is not the current user
@@ -215,9 +213,7 @@ $deleteToken = $_SESSION['deleteToken'];
 								</div>
 							</div>
 							<div id="data">
-								<p id="postContent">
-									<?=$line_arr[1]?>
-								</p>
+								<p id="postContent"><?=$line_arr[1]?></p>
 								<div id="personalPostData">
 									<div id="personalPostComment">
 									<?php
@@ -225,7 +221,7 @@ $deleteToken = $_SESSION['deleteToken'];
 											$url = "http://serversetup_node_1:61234/getReply?id=";
 											$url = $url . $line_arr[3];
 											$originalData = file_get_contents($url);
-											$originalData = explode(",", $originalData);
+											$originalData = json_decode($originalData, true);
 											$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
 											$stmt->bind_param("i", $originalData[0]);
 
@@ -256,7 +252,7 @@ $deleteToken = $_SESSION['deleteToken'];
 												$url = "http://serversetup_node_1:61234/getReply?id=";
 												$url = $url . $replyID;
 												$replyData = file_get_contents($url);
-												$replyData = explode(",", $replyData);
+												$replyData = json_decode($replyData, true);
 												$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
 												$stmt->bind_param("i", $replyData[0]);
 
@@ -321,26 +317,35 @@ $deleteToken = $_SESSION['deleteToken'];
 					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $id_to_get;
 					$skitData = file_get_contents($url);
+					$currPageUser = -1;
+					$currPagePic = "";
+					$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
+					$stmt->bind_param("i", $id_to_get);
+
+					if(!$stmt->execute()){
+						print "Error in executing command";
+					}
+
+					$stmt->bind_result($currPageUser, $currPagePic);
+					$stmt->fetch();
+					$stmt->close();
 					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
 						if(strlen($line) == 0)
 							break;
 
-						$replyIDList = explode("|", $line);
-						$replyList = explode(",", $replyIDList[1]);
-						$line_arr = explode(",", $replyIDList[0]);
+						$line_arr = json_decode($line, true);
+						$replyList = $line_arr[4];
 						$skitOwner = $line_arr[0];
 						?>
 						<div id="post" class="container-fluid">
 							<div id="personalBanner">
 								<div id="bannerData">
-									<img id="postPic" src="<?=$profile_pic?>" />
-									<p id="postusername"><strong><?=$username?></strong></p>
+									<img id="postPic" src="<?=$currPagePic?>" />
+									<p id="postusername"><strong><?=$currPageUser?></strong></p>
 								</div>
 							</div>
 							<div id="data">
-								<p id="postContent">
-									<?=$line_arr[1]?>
-								</p>
+								<p id="postContent"><?=$line_arr[1]?></p>
 								<div id="personalPostData">
 									<div id="personalPostComment">
 										<?php
@@ -348,7 +353,7 @@ $deleteToken = $_SESSION['deleteToken'];
 												$url = "http://serversetup_node_1:61234/getReply?id=";
 												$url = $url . $line_arr[3];
 												$originalData = file_get_contents($url);
-												$originalData = explode(",", $originalData);
+												$originalData = json_decode($originalData, true);
 												$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
 												$stmt->bind_param("i", $originalData[0]);
 
@@ -369,7 +374,7 @@ $deleteToken = $_SESSION['deleteToken'];
 												<p><strong>Original Skit:</strong></p>
 												<img id="replyPic" src="<?=$profile_pic?>" />
 												<p id="replyUsername"><strong><?=$username?></strong></p>
-												<p id="replyContent"><?=$originalData[1]?></p>
+												<p id="replyContent"><?=html_entity_decode($originalData[1]);?></p>
 											</div>
 										<?php
 											}
@@ -378,7 +383,7 @@ $deleteToken = $_SESSION['deleteToken'];
 													$url = "http://serversetup_node_1:61234/getReply?id=";
 													$url = $url . $replyID;
 													$replyData = file_get_contents($url);
-													$replyData = explode(",", $replyData);
+													$replyData = json_decode($replyData, true);
 													$stmt = $conn->prepare("SELECT username, profile_pic  FROM Users WHERE userid = ?;");
 													$stmt->bind_param("i", $replyData[0]);
 
@@ -433,16 +438,12 @@ $deleteToken = $_SESSION['deleteToken'];
 											}
 										?>
 									</div>
-
-
 								</div>
 							</div>
-						</div>
-					</div>
-					<?php
+						<?php
+						}
 					}
-				}
-				?>
+					?>
 				<div id="credits">
 					<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 					<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-buddha" title="Pixel Buddha">Pixel Buddha</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>

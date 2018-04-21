@@ -3,6 +3,7 @@ const elasticsearch = require('elasticsearch');
 const url = require('url');
 const express = require('express');
 const bodyParser = require('body-parser');
+const htmlencode = require('htmlencode').htmlEncode;
 
 const hostname = 'serversetup_node_1';
 const port = 61234;
@@ -166,7 +167,7 @@ function setupElastic(){
 		body: {
 			"skitID": 5,
 			"ownerID": 3,
-			"content": "Flyers are the greatest hockey team ever, just been a tough week",
+			"content": "Flyers are the greatest hockey team ever, it has just been a tough week",
 			"replyTo": -1,
 			"replies": [6]
 		}
@@ -242,7 +243,10 @@ app.get('/getSkits', function (req, res){
 	}).then(function(resp){
 		if(resp.hits.total > 0){
 			resp.hits.hits.forEach(function(hit){
-				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "," + hit._source.replyTo + "|" + hit._source.replies + "\n");
+				var replyArr = [hit._source.ownerID, hit._source.content, hit._source.skitID, hit._source.replyTo, hit._source.replies];
+				var jsonData = JSON.stringify(replyArr);
+				jsonData += "\n";
+				res.write(jsonData);
 			});
 		} else {
 			console.log("No skits");
@@ -301,7 +305,10 @@ app.get('/getReply', function (req, res){
 
 			//If we have a hit, and it should only be one then we will return data about that skit for PHP
 			resp.hits.hits.forEach(function(hit){
-				res.write(hit._source.ownerID + "," + hit._source.content + "," + hit._source.skitID + "\n");
+				var replyArr = [hit._source.ownerID, hit._source.content, hit._source.skitID];
+				var jsonData = JSON.stringify(replyArr);
+				jsonData += "\n";
+				res.write(jsonData);
 			});
 		} else {
 			console.log("No skits");

@@ -2,19 +2,24 @@ FROM php:7.2-apache
 
 ADD . .
 
+ENV FTP_USER root
+ENV FTP_PASS password
+
+
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libmemcached-dev \
     curl \
     zlib1g-dev \
-    memcached
+    memcached \
+    vsftpd
 
 RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/v3.0.4.tar.gz" \
     && mkdir -p /usr/src/php/ext/memcached \
     && tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
     && docker-php-ext-configure memcached \
     && docker-php-ext-install memcached \
-	&& rm /tmp/memcached.tar.gz
+    && rm /tmp/memcached.tar.gz
 
 RUN mv php.ini /usr/local/etc/php/conf.d/
 RUN mv docker-php-ext-memcached.ini /usr/local/etc/php/conf.d/
@@ -28,4 +33,9 @@ RUN mv ports.conf /etc/apache2/
 RUN mv 000-default.conf /etc/apache2/sites-enabled/
 RUN chown www-data:www-data uploads
 
-CMD /bin/bash -c "/etc/init.d/memcached start & " && apachectl -DFOREGROUND
+RUN mv vsftpd.conf /etc/
+
+CMD /bin/bash -c "/etc/init.d/memcached start & " \
+    && /bin/bash -c "/etc/init.d/vsftpd start & " \
+    && /bin/bash -c "export FTP_USER=root; export FTP_PASS=password" \
+    && apachectl -DFOREGROUND

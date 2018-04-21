@@ -96,13 +96,14 @@ $token = $_SESSION['token'];
 					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
+					$skitData = json_decode($skitData);
 					$i = 0;
 					$skits = preg_split("/((\r?\n)|(\r\n?))/", $skitData);
 					while($i < 4){
 						$line = $skits[$i];
 						if(strlen($line) == 0)
 							break;
-						$line_arr = explode(",", $line);
+						$line_arr = $line;
 						$skitOwner = $line_arr[0];
 
 						$skitUsername = "";

@@ -61,6 +61,22 @@
 
 	//File has passed initial inspection and is ready to be uploaded
 	if(isset($file)){
+		$stmt = $conn->prepare("SELECT profile_pic FROM Users WHERE userid = ?;");
+		$stmt->bind_param("i", $_SESSION['user_ID']);
+
+		if(!$stmt->execute()){
+			print "Error in executing command";
+		}
+
+		$stmt->bind_result($profile_pic);
+		$stmt->fetch();
+
+		$stmt->close();
+
+		//Not using default profile pic, we need to delete old one
+		if(strpos($profile_pic, "../img") != 0){
+			unlink($profile_pic);
+		}
 
 		//Get the type of file and set up the directory in which we want to store it
 		$target_dir = "../uploads/";
@@ -86,6 +102,11 @@
 		//Make sure the file has some size and then upload it
 		if ($check !== false) {
 			move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file);
+
+			$ftp = ftp_connect("serversetup_apache2_1", 21);
+			ftp_login($ftp, "root", "Docker!");
+			ftp_put($ftp, "/var/www/html/" . $target_file, $target_file, FTP_BINARY);
+			ftp_close($conn_id);
 
 			//Store the file's location in the db
 			$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
