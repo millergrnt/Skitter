@@ -103,11 +103,6 @@
 		if ($check !== false) {
 			move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file);
 
-			$ftp = ftp_connect("serversetup_apache2_1", 21);
-			ftp_login($ftp, "root", "Docker!");
-			ftp_put($ftp, "/var/www/html/" . $target_file, $target_file, FTP_BINARY);
-			ftp_close($conn_id);
-
 			//Store the file's location in the db
 			$stmt = $conn->prepare("UPDATE Users SET profile_pic = ? WHERE userid = ?;");
 			$stmt->bind_param("si", $target_file, $_SESSION['user_ID']);

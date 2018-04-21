@@ -36,7 +36,7 @@ $token = $_SESSION['token'];
 				<div class="container-fluid" id="inputArea">
 					<h2 id="settingsHeader">Settings</h2>
 					<div id="field">
-						<form action="settings.php" method="post" enctype="multipart/form-data">
+						<form action="php/settings.php" method="post" enctype="multipart/form-data">
 							<p>Display Name:</p>
 							<input type="text" id="displayName" placeholder="Enter Display Name" name="displayName">
 							<p>Email:</p>
@@ -87,23 +87,18 @@ $token = $_SESSION['token'];
 
 					$stmt->bind_result($friends);
 					$stmt->fetch();
-					if(isset($userid)){
-						die("Error setting username: username already being used<br>");
-					}
-
 					$stmt->close();
-
 					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
-					$skitData = json_decode($skitData);
 					$i = 0;
+
 					$skits = preg_split("/((\r?\n)|(\r\n?))/", $skitData);
-					while($i < 4){
+					while($i < 5){
 						$line = $skits[$i];
 						if(strlen($line) == 0)
 							break;
-						$line_arr = $line;
+						$line_arr = json_decode($line);
 						$skitOwner = $line_arr[0];
 
 						$skitUsername = "";
