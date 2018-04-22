@@ -117,7 +117,7 @@
 		}
 	}
 
-	header("Location: http://localhost/?id=" . $_SESSION['user_ID']);
+	header("Location: http://localhost/home.php?id=" . $_SESSION['user_ID']);
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);

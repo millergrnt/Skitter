@@ -1,5 +1,6 @@
 <?php
 	//Connect to database and get some basic information from the uploaded details
+	//Also authenticates user
 	session_start();
 	include_once("sqlConnect.php");
 	$userid = NULL;
@@ -117,7 +118,7 @@
 		}
 	}
 
-	header("Location: http://localhost/?id=" . $_SESSION['user_ID']);
+	header("Location: http://localhost/home.php?id=" . $_SESSION['user_ID']);
 
 	function validateUsername($unameUnsanitized){
 		$unameSanitized = strip_tags($unameUnsanitized);

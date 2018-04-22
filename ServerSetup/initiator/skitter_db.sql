@@ -7,7 +7,8 @@ CREATE TABLE Users (userid INT PRIMARY KEY AUTO_INCREMENT NOT NULL, \
 	username VARCHAR(30) NOT NULL, \
 	email VARCHAR(100) NOT NULL, \
 	profile_pic VARCHAR(100) DEFAULT "img/default.png" NOT NULL, \
-	following VARCHAR(10000) NOT NULL
+	following VARCHAR(10000) NOT NULL, \
+	sessID VARCHAR(100)
 );
 
 INSERT INTO Users VALUES (1, "password", "gmiller", "gem1086@g.rit.edu", "img/default.png", "1,2,3,4");

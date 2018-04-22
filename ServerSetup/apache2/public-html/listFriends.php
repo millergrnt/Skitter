@@ -53,7 +53,7 @@ $token = $_SESSION['token'];
 			<div class="container-fluid" id="userBanner">
 				<div id="skitterData">
 					<button id="getSettings" type="button">Settings</button>
-					<a href="/?id=1"><button id="goHome" type="button" >Home</button></a>
+					<a href="/home.php?id=<?=$_SESSION['user_ID']?>"><button id="goHome" type="button" >Home</button></a>
 				</div>
 				<div id="userData">
 					<div id="usernamediv">

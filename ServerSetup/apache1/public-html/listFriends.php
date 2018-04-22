@@ -53,7 +53,7 @@ $token = $_SESSION['token'];
 			<div class="container-fluid" id="userBanner">
 				<div id="skitterData">
 					<button id="getSettings" type="button">Settings</button>
-					<a href="/?id=1"><button id="goHome" type="button" >Home</button></a>
+					<a href="/home.php?id=<?=$_SESSION['user_ID']?>"><button id="goHome" type="button" >Home</button></a>
 				</div>
 				<div id="userData">
 					<div id="usernamediv">
@@ -87,16 +87,12 @@ $token = $_SESSION['token'];
 
 					$stmt->bind_result($friends);
 					$stmt->fetch();
-					if(isset($userid)){
-						die("Error setting username: username already being used<br>");
-					}
-
 					$stmt->close();
-
 					$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
+
 					$skits = preg_split("/((\r?\n)|(\r\n?))/", $skitData);
 					while($i < 5){
 						$line = $skits[$i];

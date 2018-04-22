@@ -1,5 +1,13 @@
 <?php
-	#THIS NEEDS TO BE FIXED WITH MYSQL
+	//Authenticates the user and then starts the SQL connection.
+	session_start();
+	$url = "http://serversetup_auth_1/Skitter/isAuthenticated?sessID=" . $_SESSION[user_ID];
+	$auth = file_get_contents($url);
+
+	if(strcmp($auth, "Fail") == 0){
+		die("Authentication Failure");
+	}
+
 	$servername = 'serversetup_mysql_1';
 	$dbuname = 'root';
 	$dbpass = 'root';

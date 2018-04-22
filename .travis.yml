@@ -1,6 +1,12 @@
 language: python
 python:
  - "3.6"
+
+before_install:
+ - cd ServerSetup
+ - docker-compose build ServerSetup
+ - docker-compose up
+
 install:
  - pip install -r testing/requirements.txt
 script:

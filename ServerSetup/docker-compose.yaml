@@ -82,3 +82,8 @@ services:
       - "61234:61234"
     depends_on:
       - dbinitiator
+
+  auth:
+    build: ./tomcat/
+    depends_on:
+      - node
