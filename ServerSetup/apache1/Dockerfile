@@ -2,9 +2,6 @@ FROM php:7.2-apache
 
 ADD . .
 
-ENV FTP_USER root
-ENV FTP_PASS password
-
 
 RUN apt-get update && apt-get install -y \
     libpq-dev \

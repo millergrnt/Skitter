@@ -20,7 +20,7 @@ public class Register extends HttpServlet {
                 if(!rs.isBeforeFirst()){
                     System.out.println("Connected to the database");
                     PreparedStatement ps=conn.prepareStatement
-                    ("INSERT INTO Users (username, email, password) VALUES (?,?,?)");
+                    ("INSERT INTO Users (username, email, password, following, profile_pic) VALUES (?,?,?, \"\", 'img/default.png')");
                     ps.setString(1, name);
                     ps.setString(2, email);
                     ps.setString(3, pass);

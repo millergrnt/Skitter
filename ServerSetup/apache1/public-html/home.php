@@ -92,7 +92,9 @@ $deleteToken = $_SESSION['deleteToken'];
 					$stmt->bind_result($friends);
 					$stmt->fetch();
 					$stmt->close();
-					$url = "http://serversetup_node_1:61234/getSkits?ids=";
+
+					if(strlen($friends) > 0){
+						$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
@@ -136,6 +138,8 @@ $deleteToken = $_SESSION['deleteToken'];
 				<?php
 						$i = $i + 1;
 					}
+				}
+
 				?>
 				<div id="seeMoreButton">
 					<a href="listFriends.php?id=<?=$id_to_get?>"><button type="button" id="viewMoreButton">Friends</button></a>
@@ -164,8 +168,12 @@ $deleteToken = $_SESSION['deleteToken'];
 					$thisUserID = strval($_SESSION['user_ID']);
 
 					//Get the skit data
-					$url = "http://serversetup_node_1:61234/getSkits?ids=";
-					$url = $url . $friends . "," . $_SESSION['user_ID'];
+					if(strlen($friends) > 0){
+						$url = "http://serversetup_node_1:61234/getSkits?ids=";
+						$url = $url . $friends . "," . $_SESSION['user_ID'];
+					} else {
+						$url = "http://serversetup_node_1:61234/getSkits?ids=" . $_SESSION['user_ID'];
+					}
 					$skitData = file_get_contents($url);
 					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
 
@@ -405,6 +413,8 @@ $deleteToken = $_SESSION['deleteToken'];
 											</div>
 										<?php
 												}
+											} else {
+												echo "Sorry no friends";
 											}?>
 										</div>
 										<?php

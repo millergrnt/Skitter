@@ -88,7 +88,9 @@ $token = $_SESSION['token'];
 					$stmt->bind_result($friends);
 					$stmt->fetch();
 					$stmt->close();
-					$url = "http://serversetup_node_1:61234/getSkits?ids=";
+
+					if(strlen($friends) > 0){
+						$url = "http://serversetup_node_1:61234/getSkits?ids=";
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
@@ -128,7 +130,12 @@ $token = $_SESSION['token'];
 				<?php
 						$i = $i + 1;
 					}
+				} else {
+					echo "Sorry no friends";
+				}
 				?>
+
+
 				<div id="seeMoreButton">
 					<a href="listFriends.php"><button type="button" id="viewMoreButton">Friends</button></a>
 				</div>
