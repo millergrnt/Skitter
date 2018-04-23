@@ -26,4 +26,8 @@ RUN javac -cp .:/usr/local/tomcat/lib/mysql-connector-java-8.0.11/* \
 	/usr/local/tomcat/webapps/Skitter/WEB-INF/classes/isAuthenticated.java \
 	-d /usr/local/tomcat/webapps/Skitter/WEB-INF/classes/
 
+RUN javac -cp .:/usr/local/tomcat/lib/mysql-connector-java-8.0.11/* \
+	/usr/local/tomcat/webapps/Skitter/WEB-INF/classes/Register.java \
+	-d /usr/local/tomcat/webapps/Skitter/WEB-INF/classes/
+
 CMD /usr/local/tomcat/bin/catalina.sh run
