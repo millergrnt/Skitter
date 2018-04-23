@@ -94,7 +94,10 @@ $deleteToken = $_SESSION['deleteToken'];
 					$stmt->close();
 
 					if(strlen($friends) > 0){
-						$url = "http://serversetup_node_1:61234/getSkits?ids=";
+					$url = "http://serversetup_node_1:61234/getSkits?ids=";
+					if($friends[0] == ','){
+						$friends = substr($friends, 1);
+					}
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
@@ -170,6 +173,9 @@ $deleteToken = $_SESSION['deleteToken'];
 					//Get the skit data
 					if(strlen($friends) > 0){
 						$url = "http://serversetup_node_1:61234/getSkits?ids=";
+						if($friends[0] == ','){
+							$friends = substr($friends, 1);
+						}
 						$url = $url . $friends . "," . $_SESSION['user_ID'];
 					} else {
 						$url = "http://serversetup_node_1:61234/getSkits?ids=" . $_SESSION['user_ID'];

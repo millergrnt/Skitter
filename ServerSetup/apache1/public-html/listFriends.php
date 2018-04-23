@@ -90,7 +90,11 @@ $token = $_SESSION['token'];
 					$stmt->close();
 
 					if(strlen($friends) > 0){
-						$url = "http://serversetup_node_1:61234/getSkits?ids=";
+					$url = "http://serversetup_node_1:61234/getSkits?ids=";
+
+					if($friends[0] == ','){
+						$friends = substr($friends, 1);
+					}
 					$url = $url . $friends;
 					$skitData = file_get_contents($url);
 					$i = 0;
