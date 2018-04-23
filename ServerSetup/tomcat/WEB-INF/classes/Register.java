@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 
 public class Register extends HttpServlet {
     public static void enterUser(String name, String email, String pass) {
-	String databaseURL = "jdbc:mysql://localhost:3306/test?user=root&password=password&useSSL=false";
+	String databaseURL = "jdbc:mysql://serversetup_mysql_1:3306/Skitter?user=root&password=root&useSSL=false";
         Connection conn = null;
         try {
 	    DriverManager.registerDriver(new com.mysql.jdbc.Driver ());
@@ -56,15 +56,15 @@ public class Register extends HttpServlet {
             }
         }
     }
- 
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-	
+
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String pass = request.getParameter("pass");
-    	enterUser(name, email, pass);  
+    	enterUser(name, email, pass);
     }
   }

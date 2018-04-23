@@ -11,7 +11,7 @@ CREATE TABLE Users (userid INT PRIMARY KEY AUTO_INCREMENT NOT NULL, \
 	sessID VARCHAR(100)
 );
 
-INSERT INTO Users VALUES (1, "password", "gmiller", "gem1086@g.rit.edu", "img/default.png", "1,2,3,4");
-INSERT INTO Users VALUES (2, "password", "mgoldman", "somename@somesite.com", "img/default.png", "1,3");
-INSERT INTO Users VALUES (4, "password", "markmark", "markiemark@mark.com", "img/default.png", "1");
-INSERT INTO Users VALUES (3, "password", "taffealex", "alex.taffe@taffenetwork.com", "img/default.png", "1");
+INSERT INTO Users VALUES (1, "password", "gmiller", "gem1086@g.rit.edu", "img/default.png", "1,2,3,4", NULL);
+INSERT INTO Users VALUES (2, "password", "mgoldman", "somename@somesite.com", "img/default.png", "1,3", NULL);
+INSERT INTO Users VALUES (4, "password", "markmark", "markiemark@mark.com", "img/default.png", "1", NULL);
+INSERT INTO Users VALUES (3, "password", "taffealex", "alex.taffe@taffenetwork.com", "img/default.png", "1", NULL);

@@ -1,10 +1,10 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
- 
+
 public class AccessDatabase {
     public static void main(String[] args) {
-        String databaseURL = "jdbc:mysql://localhost:3306/test?user=root&password=root123";
+        String databaseURL = "jdbc:mysql://serversetup_mysql_1:3306/Skitter?user=root&password=root";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(databaseURL);

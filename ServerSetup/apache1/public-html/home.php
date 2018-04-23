@@ -122,7 +122,7 @@ $deleteToken = $_SESSION['deleteToken'];
 						$stmt->fetch();
 						$stmt->close();
 				?>
-					<a href="/?id=<?= $skitOwner?>" class="sideBarSkit">
+					<a href="/home.php?id=<?= $skitOwner?>" class="sideBarSkit">
 					<div id="friendPost" class="container">
 						<div id="banner">
 							<img id="friendProfilePic" src="<?=$skitProfilePic?>" />
@@ -165,7 +165,7 @@ $deleteToken = $_SESSION['deleteToken'];
 
 					//Get the skit data
 					$url = "http://serversetup_node_1:61234/getSkits?ids=";
-					$url = $url . $friends . ",1";
+					$url = $url . $friends . "," . $_SESSION['user_ID'];
 					$skitData = file_get_contents($url);
 					foreach(preg_split("/((\r?\n)|(\r\n?))/", $skitData) as $line){
 

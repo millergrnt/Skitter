@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	String databaseURL = "jdbc:mysql://serversetup_mysql_1:3306/test?user=root&password=password&useSSL=false";
+	String databaseURL = "jdbc:mysql://serversetup_mysql_1:3306/Skitter?user=root&password=root&useSSL=false";
     Connection conn = null;
 
-	protected void doPost(HttpServletRequest request,
+	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// get request parameters for userID and password
@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
 
 					if(rs.next()){
 						PrintWriter out = response.getWriter();
-						out.println(rs.next());
+						out.println(rs.getInt(1));
 					}else{
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
 						PrintWriter out= response.getWriter();

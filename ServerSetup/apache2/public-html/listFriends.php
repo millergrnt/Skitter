@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once("php/sqlConnect.php");
-$id_to_get = 1;
+$id_to_get = $_SESSION['user_ID'];
 if(isset($_GET['id'])){
 	$id_to_get = $_GET['id'];
 }
@@ -169,7 +169,7 @@ $token = $_SESSION['token'];
 							$stmt->fetch();
 
 							if($username !== NULL){
-								echo "<a href=\"/?id=$friendNum\"><div id=\"friend\" class=\"container-fluid\">
+								echo "<a href=\"/home.php?id=$friendNum\"><div id=\"friend\" class=\"container-fluid\">
 								<img id=\"friendPic\" src=\"$profile_pic\" />
 								<div id=\"nameAndAdd\">
 								<p id=\"friendUsername\"><strong>$username</strong></p>

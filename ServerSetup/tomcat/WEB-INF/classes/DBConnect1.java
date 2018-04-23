@@ -2,10 +2,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
- 
+
 public class DBConnect1 {
     public static void main(String[] args) {
-        String databaseURL = "jdbc:mysql://localhost:3306/test?user=root&password=password&useSSL=false";
+        String databaseURL = "jdbc:mysql://serversetup_mysql_1:3306/Skitter?user=root&password=root&useSSL=false";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(databaseURL);
