@@ -113,6 +113,12 @@ class TestTestingFramework(unittest.TestCase):
 		print(r)
 		self.assertEqual(1 + 1, 2)
 
+	#Nick Tests
+	r1 = requests.post("localhost/php/register.php", data{'name': 'test', 'email':test@test.com, 'pass':'password'})
+	r2 = requests.post("localhost:8080/Skitter/isAuthenticated", data{'sessID': 1})
+	print(r.text)
+
+
 
 if __name__ == '__main__':
 	unittest.main();
